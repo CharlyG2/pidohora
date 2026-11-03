@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Platform } from 'react-native';
+import * as Location from 'expo-location';
 
 import {
   categoryOf,
@@ -13,6 +14,7 @@ import {
   type Business,
   type CategoryId,
 } from './data';
+import { businessPoint, distanceKm, findComuna, nearestComuna } from './location';
 import { newId } from './utils';
 
 /** Pantallas que se apilan sobre la pantalla principal. */
@@ -28,7 +30,8 @@ export type Route =
   | { name: 'confirmed'; bookingId: string }
   | { name: 'bookingDetail'; bookingId: string }
   | { name: 'newBooking'; start?: string; professionalId?: string }
-  | { name: 'serviceEdit'; serviceId?: string };
+  | { name: 'serviceEdit'; serviceId?: string }
+  | { name: 'location' };
 
 export type ClientTab = 'home' | 'search' | 'bookings' | 'profile';
 export type BusinessTab = 'agenda' | 'clients' | 'services' | 'settings';
@@ -46,8 +49,12 @@ export type Draft = {
   assignedProfessionalId: string | null;
 };
 
+/** Desde dónde mostramos los lugares: GPS, la comuna donde vive o una comuna elegida. */
+export type Place = { source: 'gps' | 'home' | 'comuna'; label: string; lat: number; lng: number };
+
 type Persisted = {
   version: 2;
+  place?: Place | null;
   session: Session;
   accounts: Account[];
   businesses: Business[];
@@ -55,7 +62,7 @@ type Persisted = {
   guestBookingIds: string[];
 };
 
-const STORAGE_KEY = 'pidohora-demo-v2';
+const STORAGE_KEY = 'pidohora-demo-v4';
 
 function initialData(): Persisted {
   return {
@@ -105,6 +112,11 @@ type RegisterInput = {
   address?: string;
 };
 
+function homePlace(comunaName: string | undefined): Place | null {
+  const c = findComuna(comunaName);
+  return c ? { source: 'home', label: c.name, lat: c.lat, lng: c.lng } : null;
+}
+
 type Store = {
   route: Route;
   go: (r: Route) => void;
@@ -143,6 +155,16 @@ type Store = {
   setDraft: (d: Draft | null) => void;
   startBooking: (businessId: string, serviceIds?: string[]) => void;
 
+  /** Ubicación activa (o null si aún no la sabemos). */
+  place: Place | null;
+  setPlaceComuna: (comunaName: string) => void;
+  chooseHomePlace: () => void;
+  /** Pide la ubicación al teléfono/navegador. Devuelve un mensaje de error o null si funcionó. */
+  locate: () => Promise<string | null>;
+  setHomeComuna: (comunaName: string) => void;
+  /** Distancia en km desde la ubicación activa, o null si no se puede calcular. */
+  distanceTo: (b: Business) => number | null;
+
   resetDemo: () => void;
 };
 
@@ -174,6 +196,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           ? data.bookings.filter((b) => b.clientAccountId === account.id)
           : [];
 
+    const place: Place | null = data.place ?? homePlace(account?.homeComuna);
+    const setPlace = (p: Place | null) => setData((d) => ({ ...d, place: p }));
+
     const enterMain = () => {
       setStack([{ name: 'main' }]);
       setClientTab('home');
@@ -191,7 +216,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       login: (email, password) => {
         const acc = data.accounts.find((a) => a.email.toLowerCase() === email.trim().toLowerCase());
         if (!acc || acc.password !== password) return 'El correo o la contraseña no coinciden.';
-        setData((d) => ({ ...d, session: { role: acc.role, accountId: acc.id } }));
+        setData((d) => ({ ...d, session: { role: acc.role, accountId: acc.id }, place: d.place ?? homePlace(acc.homeComuna) }));
         enterMain();
         return null;
       },
@@ -238,12 +263,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           password: input.password,
           phone: input.phone.trim(),
           businessId,
+          homeComuna: input.role === 'client' ? findComuna(input.comuna)?.name : undefined,
         };
         setData((d) => ({
           ...d,
           accounts: [...d.accounts, acc],
           businesses: newBusiness ? [...d.businesses, newBusiness] : d.businesses,
           session: { role: acc.role, accountId },
+          place: d.place ?? homePlace(acc.homeComuna),
         }));
         enterMain();
         return null;
@@ -253,7 +280,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         enterMain();
       },
       logout: () => {
-        setData((d) => ({ ...d, session: null }));
+        setData((d) => ({ ...d, session: null, place: null }));
         setStack([{ name: 'welcome' }]);
         setDraft(null);
       },
@@ -298,6 +325,48 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       startBooking: (businessId, serviceIds = []) => {
         setDraft({ businessId, serviceIds, professionalId: null, start: null, assignedProfessionalId: null });
         setStack((s) => [...s, { name: 'business', businessId }]);
+      },
+
+      place,
+      setPlaceComuna: (name) => {
+        const c = findComuna(name);
+        if (c) setPlace({ source: 'comuna', label: c.name, lat: c.lat, lng: c.lng });
+      },
+      chooseHomePlace: () => setPlace(homePlace(account?.homeComuna)),
+      locate: async () => {
+        try {
+          const perm = await Location.requestForegroundPermissionsAsync();
+          if (perm.status !== 'granted') {
+            return 'No nos diste permiso para ver tu ubicación. Puedes activarlo en los ajustes del teléfono o elegir tu comuna.';
+          }
+          const pos = await Promise.race([
+            Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced }),
+            new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000)),
+          ]);
+          const { latitude: lat, longitude: lng } = pos.coords;
+          const c = nearestComuna(lat, lng);
+          if (distanceKm(lat, lng, c.lat, c.lng) > 60) {
+            return 'Por ahora PidoHora funciona en Santiago, Valparaíso, Rancagua y Concepción. Elige una comuna.';
+          }
+          setPlace({ source: 'gps', label: c.name, lat, lng });
+          return null;
+        } catch {
+          return 'No pudimos obtener tu ubicación. Revisa que el GPS esté activo o elige tu comuna.';
+        }
+      },
+      setHomeComuna: (name) => {
+        const c = findComuna(name);
+        if (!c || !account) return;
+        setData((d) => ({
+          ...d,
+          accounts: d.accounts.map((a) => (a.id === account.id ? { ...a, homeComuna: c.name } : a)),
+          place: { source: 'home', label: c.name, lat: c.lat, lng: c.lng },
+        }));
+      },
+      distanceTo: (b) => {
+        if (!place) return null;
+        const pt = businessPoint(b);
+        return pt ? distanceKm(place.lat, place.lng, pt.lat, pt.lng) : null;
       },
 
       resetDemo: () => {

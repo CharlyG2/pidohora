@@ -64,7 +64,7 @@ function TimeGrid({ business, bookings, professionals, view, date, onSelectBooki
                     backgroundColor: isToday ? colors.primary : 'transparent',
                   }}
                 >
-                  <Text style={{ fontSize: 16, fontWeight: '800', color: isToday ? '#fff' : colors.text }}>{d.getDate()}</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '800', color: isToday ? colors.onPrimary : colors.text }}>{d.getDate()}</Text>
                 </View>
               </Pressable>
             ),
@@ -143,7 +143,7 @@ function TimeGrid({ business, bookings, professionals, view, date, onSelectBooki
                         height: HOUR_H / 2,
                         borderTopWidth: m === 0 ? 1 : 0,
                         borderTopColor: colors.border,
-                        backgroundColor: hovered ? colors.primarySoft : isClosed ? '#EEF0EE' : 'transparent',
+                        backgroundColor: hovered ? colors.primarySoft : isClosed ? colors.sunken : 'transparent',
                       }); }}
                     />
                   );
@@ -203,8 +203,8 @@ function TimeGrid({ business, bookings, professionals, view, date, onSelectBooki
               })}
 
               {isToday && nowTop > 0 && nowTop < hours.length * HOUR_H ? (
-                <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, top: nowTop, height: 2, backgroundColor: '#E03131' }}>
-                  <View style={{ position: 'absolute', left: -4, top: -3, width: 8, height: 8, borderRadius: 4, backgroundColor: '#E03131' }} />
+                <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, top: nowTop, height: 2, backgroundColor: colors.coral }}>
+                  <View style={{ position: 'absolute', left: -4, top: -3, width: 8, height: 8, borderRadius: 4, backgroundColor: colors.coral }} />
                 </View>
               ) : null}
             </View>
@@ -294,7 +294,7 @@ function MonthGrid({ business, bookings, professionals, date, onPickDay, onSelec
                     backgroundColor: isToday ? colors.primary : 'transparent',
                   }}
                 >
-                  <Text style={{ fontSize: 12, fontWeight: '700', color: isToday ? '#fff' : inMonth ? colors.text : colors.muted }}>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: isToday ? colors.onPrimary : inMonth ? colors.text : colors.muted }}>
                     {d.getDate()}
                   </Text>
                 </View>

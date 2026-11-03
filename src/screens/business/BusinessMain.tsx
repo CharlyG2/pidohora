@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 
 import { EmptyState, Screen, TabBar } from '../../components';
+import type { IconName } from '../../icons';
 import { useStore, type BusinessTab } from '../../store';
 import { colors } from '../../theme';
 import { AgendaTab } from './AgendaTab';
@@ -8,11 +9,11 @@ import { ClientsTab } from './ClientsTab';
 import { ServicesTab } from './ServicesTab';
 import { SettingsTab } from './SettingsTab';
 
-const TABS: { id: BusinessTab; label: string; icon: string }[] = [
-  { id: 'agenda', label: 'Agenda', icon: '🗓️' },
-  { id: 'clients', label: 'Clientes', icon: '👥' },
-  { id: 'services', label: 'Servicios', icon: '✂️' },
-  { id: 'settings', label: 'Ajustes', icon: '⚙️' },
+const TABS: { id: BusinessTab; label: string; icon: IconName }[] = [
+  { id: 'agenda', label: 'Agenda', icon: 'calendar' },
+  { id: 'clients', label: 'Clientes', icon: 'users' },
+  { id: 'services', label: 'Servicios', icon: 'scissors' },
+  { id: 'settings', label: 'Ajustes', icon: 'settings' },
 ];
 
 export function BusinessMain() {
@@ -20,7 +21,7 @@ export function BusinessMain() {
   if (!myBusiness) {
     return (
       <Screen canGoBack={false}>
-        <EmptyState icon="⚠️" title="No encontramos tu negocio" text="Vuelve a iniciar sesión." />
+        <EmptyState icon="alert" tone="danger" title="No encontramos tu negocio" text="Vuelve a iniciar sesión." />
         <Text onPress={logout} style={{ color: colors.primary, textAlign: 'center' }}>
           Cerrar sesión
         </Text>

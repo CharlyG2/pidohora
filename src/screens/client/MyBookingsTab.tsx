@@ -54,7 +54,7 @@ export function MyBookingsTab() {
       <Text style={styles.title}>Mis horas</Text>
       {myBookings.length === 0 ? (
         <EmptyState
-          icon="🗓️"
+          icon="calendar"
           title="Aún no tienes horas"
           text="Cuando reserves, tus horas aparecerán aquí con su recordatorio."
           action={<Button label="Buscar un lugar" onPress={() => setClientTab('search')} />}

@@ -3,8 +3,11 @@ import { Text, View } from 'react-native';
 
 import { Button, Chip, Field, Screen, Segmented, styles } from '../../components';
 import { categories, type CategoryId } from '../../data';
+import { findComuna } from '../../location';
 import { useStore } from '../../store';
 import { isValidChileanPhone, isValidEmail } from '../../utils';
+
+const POPULAR_COMUNAS = ['Santiago Centro', 'Providencia', 'Las Condes', 'Ñuñoa', 'La Florida', 'Maipú', 'Puente Alto', 'Viña del Mar'];
 
 export function RegisterScreen({ role: initialRole }: { role: 'client' | 'business' }) {
   const { register } = useStore();
@@ -26,6 +29,7 @@ export function RegisterScreen({ role: initialRole }: { role: 'client' | 'busine
     email: !isValidEmail(email) ? 'Revisa el correo.' : null,
     phone: !isValidChileanPhone(phone) ? 'Debe ser un celular chileno, ej: +56 9 1234 5678.' : null,
     password: password.length < 4 ? 'Usa al menos 4 caracteres.' : null,
+    comuna: isBiz && comuna.trim() && !findComuna(comuna) ? 'No reconocemos esa comuna. Revisa cómo está escrita.' : null,
     businessName: isBiz && businessName.trim().length < 2 ? 'Escribe el nombre de tu negocio.' : null,
     category: isBiz && !category ? 'Elige un rubro.' : null,
   };
@@ -76,7 +80,7 @@ export function RegisterScreen({ role: initialRole }: { role: 'client' | 'busine
             </View>
             {show('category') ? <Text style={styles.error}>{show('category')}</Text> : null}
           </View>
-          <Field label="Comuna" value={comuna} onChangeText={setComuna} placeholder="Ej: Providencia" nativeID="reg-comuna" />
+          <Field label="Comuna" value={comuna} onChangeText={setComuna} placeholder="Ej: Providencia" error={show('comuna')} hint="Así te encuentran los clientes que están cerca." nativeID="reg-comuna" />
           <Field label="Dirección" value={address} onChangeText={setAddress} placeholder="Ej: Av. Providencia 1234" nativeID="reg-address" />
           <Text style={[styles.section, { marginTop: 8 }]}>Tus datos</Text>
         </>
@@ -86,6 +90,17 @@ export function RegisterScreen({ role: initialRole }: { role: 'client' | 'busine
       <Field label="Correo" value={email} onChangeText={setEmail} placeholder="tucorreo@ejemplo.cl" keyboardType="email-address" autoCapitalize="none" error={show('email')} nativeID="reg-email" />
       <Field label="WhatsApp" value={phone} onChangeText={setPhone} keyboardType="phone-pad" error={show('phone')} hint="Aquí llegan las confirmaciones y recordatorios." nativeID="reg-phone" />
       <Field label="Contraseña" value={password} onChangeText={setPassword} secureTextEntry error={show('password')} nativeID="reg-password" />
+      {!isBiz ? (
+        <View style={{ gap: 6 }}>
+          <Text style={styles.label}>¿En qué comuna vives? (opcional)</Text>
+          <View style={styles.wrap}>
+            {POPULAR_COMUNAS.map((c) => (
+              <Chip key={c} small label={c} selected={comuna === c} onPress={() => setComuna(comuna === c ? '' : c)} />
+            ))}
+          </View>
+          <Text style={styles.hint}>Así te mostramos primero los lugares cerca de tu casa. Puedes cambiarla después.</Text>
+        </View>
+      ) : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
     </Screen>
   );

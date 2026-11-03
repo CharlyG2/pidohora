@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 
 import { Screen, TabBar } from '../../components';
+import type { IconName } from '../../icons';
 import { useStore, type ClientTab } from '../../store';
 import { colors } from '../../theme';
 import { HomeTab } from './HomeTab';
@@ -8,11 +9,11 @@ import { MyBookingsTab } from './MyBookingsTab';
 import { ProfileTab } from './ProfileTab';
 import { SearchTab } from './SearchTab';
 
-const TABS: { id: ClientTab; label: string; icon: string }[] = [
-  { id: 'home', label: 'Inicio', icon: '🏠' },
-  { id: 'search', label: 'Buscar', icon: '🔍' },
-  { id: 'bookings', label: 'Mis horas', icon: '🗓️' },
-  { id: 'profile', label: 'Perfil', icon: '👤' },
+const TABS: { id: ClientTab; label: string; icon: IconName }[] = [
+  { id: 'home', label: 'Inicio', icon: 'home' },
+  { id: 'search', label: 'Buscar', icon: 'search' },
+  { id: 'bookings', label: 'Mis horas', icon: 'calendar' },
+  { id: 'profile', label: 'Perfil', icon: 'user' },
 ];
 
 export function ClientMain() {

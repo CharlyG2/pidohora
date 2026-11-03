@@ -24,6 +24,9 @@ export type Business = {
   category: CategoryId;
   emoji: string;
   comuna: string;
+  /** Coordenadas exactas, si las tenemos (si no, se usa la comuna). */
+  lat?: number;
+  lng?: number;
   address: string;
   description: string;
   rating: number;
@@ -104,7 +107,8 @@ export const templateServices: Record<CategoryId, Omit<Service, 'id'>[]> = {
   deporte: [{ name: 'Clase personalizada', durationMin: 60, price: 20000 }],
 };
 
-export const proColors = ['#2563EB', '#D9480F', '#7C3AED', '#0E7C66', '#C2255C', '#B08900'];
+import { teamColors } from './theme';
+export const proColors = teamColors;
 
 const weekdays = (open: number, close: number, saturday?: { open: number; close: number }): Hours => ({
   1: { open, close },
@@ -343,6 +347,8 @@ export type Account = {
   password: string; // solo para el prototipo; en la versión real lo maneja Supabase
   phone: string;
   businessId?: string;
+  /** Comuna donde vive el cliente, para mostrarle lugares cerca. */
+  homeComuna?: string;
 };
 
 export const seedAccounts: Account[] = [
@@ -362,6 +368,7 @@ export const seedAccounts: Account[] = [
     email: 'cliente@pidohora.cl',
     password: '1234',
     phone: '+56 9 8888 2222',
+    homeComuna: 'Ñuñoa',
   },
 ];
 

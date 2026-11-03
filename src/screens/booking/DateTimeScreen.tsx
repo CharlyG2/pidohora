@@ -93,8 +93,8 @@ export function DateTimeScreen() {
                 opacity: closed ? 0.45 : 1,
               }}
             >
-              <Text style={{ fontSize: 12, fontWeight: '600', color: on ? '#fff' : colors.muted }}>{dayShort(d)}</Text>
-              <Text style={{ fontSize: 20, fontWeight: '800', color: on ? '#fff' : colors.text }}>{d.getDate()}</Text>
+              <Text style={{ fontSize: 12, fontWeight: '600', color: on ? colors.onPrimary : colors.muted }}>{dayShort(d)}</Text>
+              <Text style={{ fontSize: 20, fontWeight: '800', color: on ? colors.onPrimary : colors.text }}>{d.getDate()}</Text>
             </Pressable>
           );
         })}

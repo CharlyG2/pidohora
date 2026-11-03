@@ -3,6 +3,7 @@ import { Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-na
 
 import { Button, Card, Chip, Segmented, styles } from '../../components';
 import { useStore } from '../../store';
+import { Icon } from '../../icons';
 import { colors, radius } from '../../theme';
 import { addDays, formatCLP, formatDateLong, formatMonthYear, sameDay, startOfDay, startOfWeek } from '../../utils';
 import { Calendar, type CalendarView } from './Calendar';
@@ -59,8 +60,8 @@ export function AgendaTab() {
           >
             <Text style={{ fontWeight: '700', color: colors.text }}>Hoy</Text>
           </Pressable>
-          <NavArrow label="‹" onPress={() => step(-1)} a11y="Anterior" />
-          <NavArrow label="›" onPress={() => step(1)} a11y="Siguiente" />
+          <NavArrow icon="back" onPress={() => step(-1)} a11y="Anterior" />
+          <NavArrow icon="chevron" onPress={() => step(1)} a11y="Siguiente" />
           <Text style={{ fontSize: 18, fontWeight: '800', color: colors.text }}>{label.charAt(0).toUpperCase() + label.slice(1)}</Text>
         </View>
         <View style={[styles.row, { gap: 8 }]}>
@@ -78,7 +79,7 @@ export function AgendaTab() {
             accessibilityRole="button"
             style={{ backgroundColor: colors.primary, borderRadius: radius.sm, paddingHorizontal: 12, paddingVertical: 7 }}
           >
-            <Text style={{ color: '#fff', fontWeight: '800' }}>+ Nueva</Text>
+            <Text style={{ color: colors.onPrimary, fontWeight: '800' }}>+ Nueva</Text>
           </Pressable>
         </View>
       </View>
@@ -125,15 +126,15 @@ export function AgendaTab() {
   );
 }
 
-function NavArrow({ label, onPress, a11y }: { label: string; onPress: () => void; a11y: string }) {
+function NavArrow({ icon, onPress, a11y }: { icon: 'back' | 'chevron'; onPress: () => void; a11y: string }) {
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={a11y}
-      style={{ width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' }}
+      style={{ width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border }}
     >
-      <Text style={{ fontSize: 22, fontWeight: '700', color: colors.text, marginTop: -2 }}>{label}</Text>
+      <Icon name={icon} size={18} color={colors.text} />
     </Pressable>
   );
 }

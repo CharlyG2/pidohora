@@ -1,15 +1,17 @@
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { Card, Chip, EmptyState, Rating, SectionTitle, styles } from '../../components';
+import { Card, Chip, Cover, EmptyState, LinkText, Rating, SectionTitle, styles } from '../../components';
 import { categories, categoryOf } from '../../data';
 import { useStore } from '../../store';
+import { Icon } from '../../icons';
+import { formatDistance } from '../../location';
 import { colors, radius } from '../../theme';
 import { formatCLP, formatDuration, norm } from '../../utils';
 
 const SUGGESTIONS = ['Corte de pelo', 'Manicure', 'Masaje', 'Limpieza facial', 'Kinesiología', 'Baño mascota', 'Psicólogo'];
 
 export function SearchTab() {
-  const { businesses, searchQuery, setSearchQuery, searchCategory, setSearchCategory, startBooking } = useStore();
+  const { businesses, searchQuery, setSearchQuery, searchCategory, setSearchCategory, startBooking, place, distanceTo, go } = useStore();
   const q = norm(searchQuery.trim());
   const words = q.split(/\s+/).filter(Boolean);
 
@@ -28,10 +30,14 @@ export function SearchTab() {
         );
       });
       const businessMatch = words.every((w) => haystack.includes(w));
-      return { b, matchingServices, show: businessMatch || matchingServices.length > 0 };
+      return { b, matchingServices, km: distanceTo(b), show: businessMatch || matchingServices.length > 0 };
     })
     .filter((r) => r.show)
-    .sort((a, c) => c.matchingServices.length - a.matchingServices.length || c.b.visits - a.b.visits);
+    .sort((a, c) =>
+      place
+        ? (a.km ?? Infinity) - (c.km ?? Infinity)
+        : c.matchingServices.length - a.matchingServices.length || c.b.visits - a.b.visits,
+    );
 
   const showSuggestions = !q && !searchCategory;
 
@@ -44,13 +50,13 @@ export function SearchTab() {
           alignItems: 'center',
           gap: 8,
           backgroundColor: colors.card,
-          borderWidth: 1.5,
+          borderWidth: 2,
           borderColor: colors.primary,
           borderRadius: radius.md,
-          paddingHorizontal: 14,
+          paddingHorizontal: 16,
         }}
       >
-        <Text style={{ fontSize: 16 }}>🔍</Text>
+        <Icon name="search" size={20} color={colors.primary} />
         <TextInput
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -62,7 +68,7 @@ export function SearchTab() {
         />
         {searchQuery ? (
           <Pressable onPress={() => setSearchQuery('')} accessibilityLabel="Borrar búsqueda" hitSlop={8}>
-            <Text style={{ fontSize: 16, color: colors.muted }}>✕</Text>
+            <Icon name="x" size={18} color={colors.muted} />
           </Pressable>
         ) : null}
       </View>
@@ -91,25 +97,25 @@ export function SearchTab() {
         </>
       ) : null}
 
-      <SectionTitle>
+      <SectionTitle action={<LinkText label={place ? 'Cambiar' : 'Elegir ubicación'} onPress={() => go({ name: 'location' })} />}>
         {results.length} {results.length === 1 ? 'lugar' : 'lugares'}
+        {place ? <Text style={{ fontSize: 14, fontWeight: '600', color: colors.muted }}>{`  cerca de ${place.label}`}</Text> : null}
       </SectionTitle>
 
       {results.length === 0 ? (
-        <EmptyState icon="🤔" title="No encontramos resultados" text="Prueba con otra palabra, por ejemplo “corte”, “uñas” o “masaje”, o quita el filtro de categoría." />
+        <EmptyState icon="compass" title="No encontramos resultados" text="Prueba con otra palabra, por ejemplo “corte”, “uñas” o “masaje”, o quita el filtro de categoría." />
       ) : (
-        results.map(({ b, matchingServices }) => (
+        results.map(({ b, matchingServices, km }) => (
           <Card key={b.id} onPress={() => startBooking(b.id)}>
             <View style={styles.row}>
-              <View style={styles.thumb}>
-                <Text style={{ fontSize: 28 }}>{b.emoji}</Text>
-              </View>
+              <Cover business={b} style={styles.thumb} emojiSize={28} flat />
               <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
                 <Text style={styles.cardTitle} numberOfLines={1}>
                   {b.name}
                 </Text>
                 <Text style={styles.cardText} numberOfLines={1}>
                   {categoryOf(b.category).label} · {b.comuna}
+                  {km != null ? <Text style={{ color: colors.primary, fontWeight: '700' }}> · {formatDistance(km)}</Text> : null}
                 </Text>
                 <Rating business={b} />
               </View>
@@ -128,7 +134,7 @@ export function SearchTab() {
                       <Text style={[styles.cardText, { fontSize: 12 }]}>{formatDuration(s.durationMin)}</Text>
                     </View>
                     <Text style={[styles.price, { fontSize: 14 }]}>{formatCLP(s.price)}</Text>
-                    <Text style={{ color: colors.primary, fontWeight: '700' }}>Reservar ›</Text>
+                    <Text style={{ color: colors.primary, fontWeight: '700' }}>Reservar</Text>
                   </Pressable>
                 ))}
               </View>

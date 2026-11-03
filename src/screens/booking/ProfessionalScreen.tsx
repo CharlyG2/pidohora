@@ -2,6 +2,7 @@ import { Text, View } from 'react-native';
 
 import { Card, Screen, styles } from '../../components';
 import { useStore } from '../../store';
+import { Icon } from '../../icons';
 import { colors } from '../../theme';
 
 export function ProfessionalScreen() {
@@ -42,7 +43,7 @@ export function ProfessionalScreen() {
               <Text style={styles.cardTitle}>{p.name}</Text>
               <Text style={styles.cardText}>{p.role}</Text>
             </View>
-            <Text style={{ fontSize: 22, color: colors.primary }}>›</Text>
+            <Icon name="chevron" size={20} color={colors.muted} />
           </View>
         </Card>
       ))}
