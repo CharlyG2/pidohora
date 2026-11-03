@@ -1,6 +1,6 @@
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { Card, Chip, EmptyState, Rating, SectionTitle, styles } from '../../components';
+import { Card, Chip, Cover, EmptyState, Rating, SectionTitle, styles } from '../../components';
 import { categories, categoryOf } from '../../data';
 import { useStore } from '../../store';
 import { colors, radius } from '../../theme';
@@ -101,9 +101,7 @@ export function SearchTab() {
         results.map(({ b, matchingServices }) => (
           <Card key={b.id} onPress={() => startBooking(b.id)}>
             <View style={styles.row}>
-              <View style={styles.thumb}>
-                <Text style={{ fontSize: 28 }}>{b.emoji}</Text>
-              </View>
+              <Cover business={b} style={styles.thumb} emojiSize={28} />
               <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
                 <Text style={styles.cardTitle} numberOfLines={1}>
                   {b.name}

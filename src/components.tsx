@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View, type TextInputProps, type ViewStyle } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type TextInputProps, type ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { categoryOf, type Business } from './data';
+import { businessImages } from './images';
 import { useStore } from './store';
 import { colors, MAX_WIDTH, radius } from './theme';
 import { formatCLP, formatRating } from './utils';
@@ -295,15 +296,27 @@ export function Avatar({ label, color = colors.primary, size = 40 }: { label: st
   );
 }
 
+/** Foto de portada del negocio; si no tiene, muestra su ícono sobre color. */
+export function Cover({ business, style, emojiSize }: { business: Business; style: ViewStyle; emojiSize: number }) {
+  const uri = businessImages[business.id];
+  return (
+    <View style={[style, { overflow: 'hidden' }]}>
+      {uri ? (
+        <Image source={{ uri }} style={{ width: '100%', height: '100%' }} resizeMode="cover" accessibilityLabel={business.name} />
+      ) : (
+        <Text style={{ fontSize: emojiSize }}>{business.emoji}</Text>
+      )}
+    </View>
+  );
+}
+
 /** Tarjeta horizontal de negocio para listas. */
 export function BusinessRow({ business, onPress }: { business: Business; onPress: () => void }) {
   const from = Math.min(...business.services.map((s) => s.price));
   return (
     <Card onPress={onPress}>
       <View style={styles.row}>
-        <View style={styles.thumb}>
-          <Text style={{ fontSize: 30 }}>{business.emoji}</Text>
-        </View>
+        <Cover business={business} style={styles.thumb} emojiSize={30} />
         <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
           <Text style={styles.cardTitle} numberOfLines={1}>
             {business.name}
@@ -326,9 +339,7 @@ export function BusinessRow({ business, onPress }: { business: Business; onPress
 export function BusinessTile({ business, onPress }: { business: Business; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} accessibilityRole="button" style={({ pressed }) => [styles.tile, pressed && { opacity: 0.85 }]}>
-      <View style={styles.tileCover}>
-        <Text style={{ fontSize: 40 }}>{business.emoji}</Text>
-      </View>
+      <Cover business={business} style={styles.tileCover} emojiSize={40} />
       <View style={{ padding: 10, gap: 2 }}>
         <Text style={styles.cardTitle} numberOfLines={1}>
           {business.name}
@@ -447,6 +458,6 @@ export const styles = StyleSheet.create({
     borderColor: colors.border,
     overflow: 'hidden',
   },
-  tileCover: { height: 86, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' },
+  tileCover: { height: 110, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' },
   divider: { height: 1, backgroundColor: colors.border, marginVertical: 10 },
 });

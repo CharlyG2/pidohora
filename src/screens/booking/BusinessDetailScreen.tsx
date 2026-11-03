@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { Avatar, Button, Card, Rating, Screen, SectionTitle, styles } from '../../components';
+import { Avatar, Button, Card, Cover, Rating, Screen, SectionTitle, styles } from '../../components';
 import { categoryOf } from '../../data';
 import { useStore } from '../../store';
 import { colors, radius } from '../../theme';
@@ -49,17 +49,11 @@ export function BusinessDetailScreen({ businessId }: { businessId: string }) {
         </>
       }
     >
-      <View
-        style={{
-          height: 120,
-          borderRadius: radius.lg,
-          backgroundColor: colors.primarySoft,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Text style={{ fontSize: 64 }}>{b.emoji}</Text>
-      </View>
+      <Cover
+        business={b}
+        emojiSize={64}
+        style={{ height: 200, borderRadius: radius.lg, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' }}
+      />
       <View style={{ gap: 4 }}>
         <Text style={styles.title}>{b.name}</Text>
         <View style={[styles.row, { gap: 8, flexWrap: 'wrap' }]}>
