@@ -1,12 +1,10 @@
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
-import { LinearGradient } from 'expo-linear-gradient';
-
 import { BusinessRow, BusinessTile, LinkText, SectionTitle, styles } from '../../components';
 import { Icon } from '../../icons';
 import { categories } from '../../data';
 import { useStore } from '../../store';
-import { colors, photoGradients, radius } from '../../theme';
+import { colors, radius, softTints } from '../../theme';
 
 export function HomeTab() {
   const { businesses, account, session, setClientTab, setSearchCategory, setSearchQuery, startBooking, go } = useStore();
@@ -61,15 +59,12 @@ export function HomeTab() {
             accessibilityLabel={c.label}
             style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1 }]}
           >
-            <LinearGradient
-              colors={photoGradients[i % photoGradients.length]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{ width: 112, height: 84, borderRadius: radius.md, padding: 10, justifyContent: 'space-between' }}
+            <View
+              style={{ width: 112, height: 84, borderRadius: radius.md, padding: 10, justifyContent: 'space-between', backgroundColor: softTints[i % softTints.length] }}
             >
               <Text style={{ fontSize: 22 }}>{c.emoji}</Text>
-              <Text style={{ fontSize: 14, fontWeight: '800', color: colors.onPrimary }}>{c.label}</Text>
-            </LinearGradient>
+              <Text style={{ fontSize: 14, fontWeight: '800', color: colors.text }}>{c.label}</Text>
+            </View>
           </Pressable>
         ))}
       </ScrollView>

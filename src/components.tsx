@@ -7,7 +7,7 @@ import { categoryOf, type Business } from './data';
 import { businessImages } from './images';
 import { useStore } from './store';
 import { Icon, type IconName } from './icons';
-import { colors, MAX_WIDTH, photoGradients, radius, shadow } from './theme';
+import { colors, MAX_WIDTH, photoGradients, radius, shadow, softTints } from './theme';
 import { formatCLP, formatRating } from './utils';
 
 export function Logo({ size = 22 }: { size?: number }) {
@@ -303,19 +303,25 @@ export function Avatar({ label, color = colors.primary, size = 40 }: { label: st
 }
 
 /** Degradado estable por negocio, para las fotos de relleno. */
-function gradientFor(id: string): [string, string] {
+function hashOf(id: string) {
   let h = 0;
   for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  return photoGradients[h % photoGradients.length];
+  return h;
 }
+const gradientFor = (id: string) => photoGradients[hashOf(id) % photoGradients.length];
 
-/** Foto de portada del negocio; si aún no tiene, un degradado de color con su ícono suave. */
-export function Cover({ business, style, emojiSize }: { business: Business; style: ViewStyle; emojiSize: number }) {
+/**
+ * Foto de portada del negocio. Si aún no tiene foto: en tarjetas grandes un degradado de color,
+ * y en las pequeñas (`flat`) un color suave liso.
+ */
+export function Cover({ business, style, emojiSize, flat }: { business: Business; style: ViewStyle; emojiSize: number; flat?: boolean }) {
   const uri = businessImages[business.id];
   return (
-    <View style={[style, { overflow: 'hidden', backgroundColor: colors.primarySoft }]}>
+    <View style={[style, { overflow: 'hidden', backgroundColor: softTints[hashOf(business.id) % softTints.length] }]}>
       {uri ? (
         <Image source={{ uri }} style={{ width: '100%', height: '100%' }} resizeMode="cover" accessibilityLabel={business.name} />
+      ) : flat ? (
+        <Text style={{ fontSize: emojiSize }}>{business.emoji}</Text>
       ) : (
         <LinearGradient
           colors={gradientFor(business.id)}
@@ -336,7 +342,7 @@ export function BusinessRow({ business, onPress }: { business: Business; onPress
   return (
     <Card onPress={onPress}>
       <View style={styles.row}>
-        <Cover business={business} style={styles.thumb} emojiSize={30} />
+        <Cover business={business} style={styles.thumb} emojiSize={30} flat />
         <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
           <Text style={styles.cardTitle} numberOfLines={1}>
             {business.name}

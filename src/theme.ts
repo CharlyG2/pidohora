@@ -56,5 +56,8 @@ export const photoGradients: [string, string][] = [
   ['#E666B3', '#8C59F2'],
 ];
 
+/** Colores suaves lisos para las tarjetas pequeñas (sin degradado). */
+export const softTints = ['#EEEBFF', '#DDF8F0', '#FFF3D6', '#FFE9E8', '#E6F0FE'];
+
 /** Ancho máximo del contenido, para que en escritorio no se estire. */
 export const MAX_WIDTH = 760;

@@ -102,7 +102,7 @@ export function SearchTab() {
         results.map(({ b, matchingServices }) => (
           <Card key={b.id} onPress={() => startBooking(b.id)}>
             <View style={styles.row}>
-              <Cover business={b} style={styles.thumb} emojiSize={28} />
+              <Cover business={b} style={styles.thumb} emojiSize={28} flat />
               <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
                 <Text style={styles.cardTitle} numberOfLines={1}>
                   {b.name}
