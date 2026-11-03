@@ -100,3 +100,45 @@ export function isValidChileanPhone(raw: string) {
 export function newId() {
   return Math.random().toString(36).slice(2, 10);
 }
+
+const MONTHS_LONG = [
+  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
+];
+
+export function formatMonthYear(d: Date) {
+  return `${MONTHS_LONG[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+export function addDays(d: Date, n: number) {
+  const x = new Date(d);
+  x.setDate(x.getDate() + n);
+  return x;
+}
+
+/** Lunes de la semana de `d`. */
+export function startOfWeek(d: Date) {
+  const x = startOfDay(d);
+  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+  return x;
+}
+
+/** Las 6 semanas (42 días) que muestra un calendario mensual, partiendo en lunes. */
+export function monthGrid(d: Date): Date[] {
+  const first = new Date(d.getFullYear(), d.getMonth(), 1);
+  const start = startOfWeek(first);
+  return Array.from({ length: 42 }, (_, i) => addDays(start, i));
+}
+
+/** Texto normalizado para buscar sin importar tildes ni mayúsculas. */
+export function norm(s: string) {
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+export function formatRating(r: number) {
+  return r.toFixed(1).replace('.', ',');
+}
+
+export function isValidEmail(s: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
+}

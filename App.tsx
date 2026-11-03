@@ -1,22 +1,34 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { AgendaScreen } from './src/screens/AgendaScreen';
-import { ConfirmedScreen } from './src/screens/ConfirmedScreen';
-import { DateTimeScreen } from './src/screens/DateTimeScreen';
-import { DetailsScreen } from './src/screens/DetailsScreen';
-import { HomeScreen } from './src/screens/HomeScreen';
-import { ProfessionalScreen } from './src/screens/ProfessionalScreen';
-import { ServicesScreen } from './src/screens/ServicesScreen';
+import { LoginScreen } from './src/screens/auth/LoginScreen';
+import { RegisterScreen } from './src/screens/auth/RegisterScreen';
+import { WelcomeScreen } from './src/screens/auth/WelcomeScreen';
+import { BusinessDetailScreen } from './src/screens/booking/BusinessDetailScreen';
+import { ConfirmedScreen } from './src/screens/booking/ConfirmedScreen';
+import { DateTimeScreen } from './src/screens/booking/DateTimeScreen';
+import { DetailsScreen } from './src/screens/booking/DetailsScreen';
+import { ProfessionalScreen } from './src/screens/booking/ProfessionalScreen';
+import { BookingDetailScreen } from './src/screens/business/BookingDetailScreen';
+import { BusinessMain } from './src/screens/business/BusinessMain';
+import { NewBookingScreen } from './src/screens/business/NewBookingScreen';
+import { ServiceEditScreen } from './src/screens/business/ServiceEditScreen';
+import { ClientMain } from './src/screens/client/ClientMain';
 import { StoreProvider, useStore } from './src/store';
 
 function Router() {
-  const { route } = useStore();
+  const { route, session } = useStore();
   switch (route.name) {
-    case 'home':
-      return <HomeScreen />;
-    case 'services':
-      return <ServicesScreen businessId={route.businessId} />;
+    case 'welcome':
+      return <WelcomeScreen />;
+    case 'login':
+      return <LoginScreen />;
+    case 'register':
+      return <RegisterScreen key={route.role} role={route.role} />;
+    case 'main':
+      return session?.role === 'business' ? <BusinessMain /> : <ClientMain />;
+    case 'business':
+      return <BusinessDetailScreen businessId={route.businessId} />;
     case 'professional':
       return <ProfessionalScreen />;
     case 'datetime':
@@ -25,8 +37,12 @@ function Router() {
       return <DetailsScreen />;
     case 'confirmed':
       return <ConfirmedScreen bookingId={route.bookingId} />;
-    case 'agenda':
-      return <AgendaScreen businessId={route.businessId} />;
+    case 'bookingDetail':
+      return <BookingDetailScreen bookingId={route.bookingId} />;
+    case 'newBooking':
+      return <NewBookingScreen start={route.start} professionalId={route.professionalId} />;
+    case 'serviceEdit':
+      return <ServiceEditScreen serviceId={route.serviceId} />;
   }
 }
 

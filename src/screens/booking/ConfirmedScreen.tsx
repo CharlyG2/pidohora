@@ -1,12 +1,12 @@
 import { Text, View } from 'react-native';
 
-import { Badge, Button, Card, Screen, styles } from '../components';
-import { useStore } from '../store';
-import { colors } from '../theme';
-import { formatCLP, formatDateLong, formatTime } from '../utils';
+import { Badge, Button, Card, Screen, styles } from '../../components';
+import { useStore } from '../../store';
+import { colors } from '../../theme';
+import { formatCLP, formatDateLong, formatTime } from '../../utils';
 
 export function ConfirmedScreen({ bookingId }: { bookingId: string }) {
-  const { bookings, business, reset, go } = useStore();
+  const { bookings, business, home, setClientTab, setDraft } = useStore();
   const booking = bookings.find((x) => x.id === bookingId);
   if (!booking) return null;
   const b = business(booking.businessId);
@@ -20,13 +20,21 @@ export function ConfirmedScreen({ bookingId }: { bookingId: string }) {
       canGoBack={false}
       footer={
         <>
-          <Button label="Volver al inicio" onPress={reset} />
           <Button
-            label={`Ver la agenda de ${b.name}`}
+            label="Ver mis horas"
+            onPress={() => {
+              setDraft(null);
+              setClientTab('bookings');
+              home();
+            }}
+          />
+          <Button
+            label="Volver al inicio"
             variant="secondary"
             onPress={() => {
-              reset();
-              go({ name: 'agenda', businessId: b.id });
+              setDraft(null);
+              setClientTab('home');
+              home();
             }}
           />
         </>

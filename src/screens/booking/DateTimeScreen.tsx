@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
-import { Button, Chip, Screen, SectionTitle, styles } from '../components';
-import { useStore } from '../store';
-import { colors, radius } from '../theme';
+import { Button, Chip, Screen, SectionTitle, styles } from '../../components';
+import { useStore } from '../../store';
+import { colors, radius } from '../../theme';
 import {
   availableSlots,
   dayShort,
@@ -12,7 +12,7 @@ import {
   formatTime,
   nextDays,
   sameDay,
-} from '../utils';
+} from '../../utils';
 
 export function DateTimeScreen() {
   const { business, draft, setDraft, go, bookings } = useStore();

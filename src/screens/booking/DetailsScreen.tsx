@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 
-import { Button, Card, Screen, SectionTitle, styles } from '../components';
-import { useStore } from '../store';
-import { colors } from '../theme';
-import { formatCLP, formatDateLong, formatDuration, formatTime, isValidChileanPhone } from '../utils';
+import { Button, Card, Screen, SectionTitle, styles } from '../../components';
+import { useStore } from '../../store';
+import { colors } from '../../theme';
+import { formatCLP, formatDateLong, formatDuration, formatTime, isValidChileanPhone } from '../../utils';
 
 export function DetailsScreen() {
-  const { business, draft, addBooking, go } = useStore();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('+56 9 ');
+  const { business, draft, addBooking, go, account } = useStore();
+  const [name, setName] = useState(account?.name ?? '');
+  const [phone, setPhone] = useState(account?.phone ?? '+56 9 ');
   const [method, setMethod] = useState<'online' | 'local'>('online');
   const [touched, setTouched] = useState(false);
 
@@ -40,6 +40,8 @@ export function DetailsScreen() {
       // Pago simulado: en esta versión no se cobra de verdad.
       paid: method === 'online',
       paymentMethod: method,
+      source: 'app',
+      clientAccountId: account?.role === 'client' ? account.id : undefined,
     });
     go({ name: 'confirmed', bookingId: booking.id });
   };

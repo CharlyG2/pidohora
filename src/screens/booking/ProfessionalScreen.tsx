@@ -1,8 +1,8 @@
 import { Text, View } from 'react-native';
 
-import { Card, Screen, styles } from '../components';
-import { useStore } from '../store';
-import { colors } from '../theme';
+import { Card, Screen, styles } from '../../components';
+import { useStore } from '../../store';
+import { colors } from '../../theme';
 
 export function ProfessionalScreen() {
   const { business, draft, setDraft, go } = useStore();
