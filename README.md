@@ -2,11 +2,17 @@
 
 App para pedir hora en negocios de servicios: barberías, estética, psicología, peluquería de mascotas y cualquier negocio que trabaje con citas. Funciona en Android, iPhone y web (escritorio), con un solo código hecho en React Native + Expo.
 
-## Estado actual (primera versión)
+## Estado actual (versión 2 del prototipo)
 
-- **Cliente:** elige negocio, uno o varios servicios, profesional (o "cualquiera disponible"), día y hora, deja su nombre y WhatsApp, y elige pagar en línea o en el local.
-- **Negocio:** agenda por día y por profesional, con cuánto se ha cobrado, cuánto falta por cobrar, y botones para marcar pagado o cancelar.
-- Los datos son de ejemplo y viven en la memoria de la app. El pago y los mensajes de WhatsApp están simulados.
+- **Entrada:** crear cuenta (cliente o negocio), iniciar sesión o seguir como invitado.
+  Cuentas de prueba: `negocio@pidohora.cl` / `1234` y `cliente@pidohora.cl` / `1234`.
+- **Cliente (con o sin cuenta):** inicio con categorías, más visitados, mejor evaluados y nuevos;
+  buscador por servicio; ficha del negocio con servicios, equipo, horario y reseñas; reserva con
+  varios servicios, profesional o "cualquiera", día y hora libres; "Mis horas" con próximas y anteriores.
+- **Negocio:** agenda tipo Google Calendar / Outlook con vista día (columnas por profesional), semana y
+  mes; tocar un espacio libre crea una reserva a mano; detalle de cada cita (pagado, recordatorio,
+  cancelar); clientes con visitas y gasto; servicios y equipo editables; horario de atención; plan y extras.
+- Los datos son de ejemplo. En web se guardan en el navegador; pagos, WhatsApp y contraseñas están simulados.
 
 ## Próximos pasos
 
