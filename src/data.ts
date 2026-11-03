@@ -24,6 +24,9 @@ export type Business = {
   category: CategoryId;
   emoji: string;
   comuna: string;
+  /** Coordenadas exactas, si las tenemos (si no, se usa la comuna). */
+  lat?: number;
+  lng?: number;
   address: string;
   description: string;
   rating: number;
@@ -344,6 +347,8 @@ export type Account = {
   password: string; // solo para el prototipo; en la versión real lo maneja Supabase
   phone: string;
   businessId?: string;
+  /** Comuna donde vive el cliente, para mostrarle lugares cerca. */
+  homeComuna?: string;
 };
 
 export const seedAccounts: Account[] = [
@@ -363,6 +368,7 @@ export const seedAccounts: Account[] = [
     email: 'cliente@pidohora.cl',
     password: '1234',
     phone: '+56 9 8888 2222',
+    homeComuna: 'Ñuñoa',
   },
 ];
 

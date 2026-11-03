@@ -34,3 +34,7 @@ Revisión de tipos: `npx tsc --noEmit`.
 ## Estilo visual (v3)
 
 La app usa el estilo "tecnológico y amable" del Figma (https://www.figma.com/design/XWT5q5oJigHvZIFuwbaF62): violeta `#5B4CF5` y menta `#12C29B`, sombras suaves, esquinas redondeadas e íconos de línea (`src/icons.tsx`). Los colores viven en `src/theme.ts` con el nombre de su variable en Figma. Mientras no haya fotos reales, las tarjetas muestran un degradado de color. La tipografía Plus Jakarta Sans se incluye en el demo web; en el teléfono aún usa la letra del sistema.
+
+## Lugares cerca de ti
+
+El cliente ve primero los lugares cerca de donde está (`src/location.ts`). Puede usar su ubicación actual (expo-location: GPS en el teléfono, ubicación del navegador en web), la comuna donde vive (se elige al crear la cuenta o en el perfil) o elegir cualquier comuna. El inicio muestra "más visitados cerca de ti" (hasta 8 km) y "lo más cerca"; la búsqueda se ordena por distancia y cada tarjeta muestra "a 1,2 km". Por ahora los negocios usan las coordenadas de su comuna; la versión real guardará su dirección exacta.

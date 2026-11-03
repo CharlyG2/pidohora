@@ -8,6 +8,7 @@ import { businessImages } from './images';
 import { useStore } from './store';
 import { Icon, type IconName } from './icons';
 import { colors, MAX_WIDTH, photoGradients, radius, shadow, softTints } from './theme';
+import { formatDistance } from './location';
 import { formatCLP, formatRating } from './utils';
 
 export function Logo({ size = 22 }: { size?: number }) {
@@ -338,6 +339,8 @@ export function Cover({ business, style, emojiSize, flat }: { business: Business
 
 /** Tarjeta horizontal de negocio para listas. */
 export function BusinessRow({ business, onPress }: { business: Business; onPress: () => void }) {
+  const { distanceTo } = useStore();
+  const km = distanceTo(business);
   const from = Math.min(...business.services.map((s) => s.price));
   return (
     <Card onPress={onPress}>
@@ -349,6 +352,7 @@ export function BusinessRow({ business, onPress }: { business: Business; onPress
           </Text>
           <Text style={styles.cardText} numberOfLines={1}>
             {categoryOf(business.category).label} · {business.comuna}
+            {km != null ? <Text style={{ color: colors.primary, fontWeight: '700' }}> · {formatDistance(km)}</Text> : null}
           </Text>
           <View style={[styles.row, { gap: 8 }]}>
             <Rating business={business} />
@@ -363,9 +367,19 @@ export function BusinessRow({ business, onPress }: { business: Business; onPress
 
 /** Tarjeta vertical para carruseles ("más visitados"). */
 export function BusinessTile({ business, onPress }: { business: Business; onPress: () => void }) {
+  const { distanceTo } = useStore();
+  const km = distanceTo(business);
   return (
     <Pressable onPress={onPress} accessibilityRole="button" style={({ pressed }) => [styles.tile, pressed && { opacity: 0.85 }]}>
-      <Cover business={business} style={styles.tileCover} emojiSize={40} />
+      <View>
+        <Cover business={business} style={styles.tileCover} emojiSize={40} />
+        {km != null ? (
+          <View style={styles.distancePill}>
+            <Icon name="navigation" size={11} color={colors.text} strokeWidth={2.5} />
+            <Text style={{ fontSize: 12, fontWeight: '700', color: colors.text }}>{formatDistance(km).replace('a ', '')}</Text>
+          </View>
+        ) : null}
+      </View>
       <View style={{ padding: 10, gap: 2 }}>
         <Text style={styles.cardTitle} numberOfLines={1}>
           {business.name}
@@ -511,5 +525,17 @@ export const styles = StyleSheet.create({
     ...shadow.card,
   },
   tileCover: { height: 130, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' },
+  distancePill: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.92)',
+  },
   divider: { height: 1, backgroundColor: colors.border, marginVertical: 10 },
 });

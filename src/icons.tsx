@@ -66,6 +66,8 @@ const ICONS = {
       <Path d="M12 6v6l4 2" />
     </>
   ),
+  navigation: <Path d="M3 11l19-9-9 19-2-8-8-2z" />,
+  homeHeart: <Path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" />,
   back: <Path d="m15 18-6-6 6-6" />,
   chevron: <Path d="m9 18 6-6-6-6" />,
   x: <Path d="M18 6 6 18M6 6l12 12" />,

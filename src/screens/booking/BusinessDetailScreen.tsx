@@ -4,13 +4,14 @@ import { Avatar, Button, Card, Cover, Rating, Screen, SectionTitle, styles } fro
 import { categoryOf } from '../../data';
 import { useStore } from '../../store';
 import { Icon } from '../../icons';
+import { formatDistance } from '../../location';
 import { colors, radius } from '../../theme';
 import { formatCLP, formatDuration } from '../../utils';
 
 const DAY_NAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
 export function BusinessDetailScreen({ businessId }: { businessId: string }) {
-  const { business, draft, setDraft, go } = useStore();
+  const { business, draft, setDraft, go, distanceTo } = useStore();
   const b = business(businessId);
   if (!draft) return null;
 
@@ -61,6 +62,7 @@ export function BusinessDetailScreen({ businessId }: { businessId: string }) {
           <Rating business={b} />
           <Text style={styles.cardText}>
             {categoryOf(b.category).label} · {b.comuna}
+            {distanceTo(b) != null ? <Text style={{ color: colors.primary, fontWeight: '700' }}> · {formatDistance(distanceTo(b)!)}</Text> : null}
           </Text>
         </View>
         {b.address ? (
