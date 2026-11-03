@@ -30,3 +30,7 @@ npm start        # y escanear el QR con Expo Go en el celular
 ```
 
 Revisión de tipos: `npx tsc --noEmit`.
+
+## Estilo visual (v3)
+
+La app usa el estilo "tecnológico y amable" del Figma (https://www.figma.com/design/XWT5q5oJigHvZIFuwbaF62): violeta `#5B4CF5` y menta `#12C29B`, sombras suaves, esquinas redondeadas e íconos de línea (`src/icons.tsx`). Los colores viven en `src/theme.ts` con el nombre de su variable en Figma. Mientras no haya fotos reales, las tarjetas muestran un degradado de color. La tipografía Plus Jakarta Sans se incluye en el demo web; en el teléfono aún usa la letra del sistema.

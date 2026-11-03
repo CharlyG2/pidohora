@@ -55,7 +55,7 @@ type Persisted = {
   guestBookingIds: string[];
 };
 
-const STORAGE_KEY = 'pidohora-demo-v2';
+const STORAGE_KEY = 'pidohora-demo-v3';
 
 function initialData(): Persisted {
   return {

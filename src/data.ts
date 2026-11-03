@@ -104,7 +104,8 @@ export const templateServices: Record<CategoryId, Omit<Service, 'id'>[]> = {
   deporte: [{ name: 'Clase personalizada', durationMin: 60, price: 20000 }],
 };
 
-export const proColors = ['#2563EB', '#D9480F', '#7C3AED', '#0E7C66', '#C2255C', '#B08900'];
+import { teamColors } from './theme';
+export const proColors = teamColors;
 
 const weekdays = (open: number, close: number, saturday?: { open: number; close: number }): Hours => ({
   1: { open, close },

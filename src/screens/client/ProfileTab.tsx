@@ -11,7 +11,7 @@ export function ProfileTab() {
       <>
         <Text style={styles.title}>Perfil</Text>
         <EmptyState
-          icon="👤"
+          icon="user"
           title="Estás como invitado"
           text="Crea una cuenta para guardar tus horas, tus lugares favoritos y reservar con un toque."
           action={

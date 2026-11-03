@@ -1,17 +1,19 @@
 import type { ReactNode } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type TextInputProps, type ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { categoryOf, type Business } from './data';
 import { businessImages } from './images';
 import { useStore } from './store';
-import { colors, MAX_WIDTH, radius } from './theme';
+import { Icon, type IconName } from './icons';
+import { colors, MAX_WIDTH, photoGradients, radius, shadow } from './theme';
 import { formatCLP, formatRating } from './utils';
 
 export function Logo({ size = 22 }: { size?: number }) {
   return (
-    <Text style={{ fontSize: size, fontWeight: '800', color: colors.primary }}>
-      Pido<Text style={{ color: colors.accent }}>Hora</Text>
+    <Text style={{ fontSize: size, fontWeight: '800', color: colors.primary, letterSpacing: -0.5 }}>
+      Pido<Text style={{ color: colors.mint }}>Hora</Text>
     </Text>
   );
 }
@@ -60,7 +62,9 @@ export function Screen({
         <View style={[styles.headerInner, { maxWidth }]}>
           {canGoBack ? (
             <Pressable onPress={back} hitSlop={12} accessibilityRole="button" accessibilityLabel="Volver">
-              <Text style={styles.back}>‹ Volver</Text>
+              <View style={styles.backBtn}>
+                <Icon name="back" size={20} color={colors.text} />
+              </View>
             </Pressable>
           ) : (
             <Logo />
@@ -84,7 +88,7 @@ export function TabBar<T extends string>({
   active,
   onChange,
 }: {
-  tabs: { id: T; label: string; icon: string }[];
+  tabs: { id: T; label: string; icon: IconName }[];
   active: T;
   onChange: (t: T) => void;
 }) {
@@ -101,7 +105,9 @@ export function TabBar<T extends string>({
               accessibilityState={{ selected: on }}
               style={styles.tab}
             >
-              <Text style={{ fontSize: 20, opacity: on ? 1 : 0.55 }}>{t.icon}</Text>
+              <View style={[styles.tabPill, on && { backgroundColor: colors.primarySoft }]}>
+                <Icon name={t.icon} size={22} color={on ? colors.primary : colors.muted} />
+              </View>
               <Text style={[styles.tabLabel, on && { color: colors.primary }]}>{t.label}</Text>
             </Pressable>
           );
@@ -165,7 +171,7 @@ export function Button({
       <Text
         style={[
           styles.buttonText,
-          variant !== 'primary' && { color: colors.primary },
+          variant !== 'primary' && { color: colors.primaryDark },
           variant === 'danger' && { color: colors.danger },
         ]}
       >
@@ -286,25 +292,39 @@ export function Avatar({ label, color = colors.primary, size = 40 }: { label: st
         width: size,
         height: size,
         borderRadius: size / 2,
-        backgroundColor: color + '22',
+        backgroundColor: color,
         alignItems: 'center',
         justifyContent: 'center',
       }}
     >
-      <Text style={{ fontSize: size * 0.42, fontWeight: '800', color }}>{label.slice(0, 1).toUpperCase()}</Text>
+      <Text style={{ fontSize: size * 0.4, fontWeight: '800', color: colors.onPrimary }}>{label.slice(0, 1).toUpperCase()}</Text>
     </View>
   );
 }
 
-/** Foto de portada del negocio; si no tiene, muestra su ícono sobre color. */
+/** Degradado estable por negocio, para las fotos de relleno. */
+function gradientFor(id: string): [string, string] {
+  let h = 0;
+  for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return photoGradients[h % photoGradients.length];
+}
+
+/** Foto de portada del negocio; si aún no tiene, un degradado de color con su ícono suave. */
 export function Cover({ business, style, emojiSize }: { business: Business; style: ViewStyle; emojiSize: number }) {
   const uri = businessImages[business.id];
   return (
-    <View style={[style, { overflow: 'hidden' }]}>
+    <View style={[style, { overflow: 'hidden', backgroundColor: colors.primarySoft }]}>
       {uri ? (
         <Image source={{ uri }} style={{ width: '100%', height: '100%' }} resizeMode="cover" accessibilityLabel={business.name} />
       ) : (
-        <Text style={{ fontSize: emojiSize }}>{business.emoji}</Text>
+        <LinearGradient
+          colors={gradientFor(business.id)}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <Text style={{ fontSize: emojiSize, opacity: 0.9 }}>{business.emoji}</Text>
+        </LinearGradient>
       )}
     </View>
   );
@@ -329,7 +349,7 @@ export function BusinessRow({ business, onPress }: { business: Business; onPress
             {isFinite(from) ? <Text style={styles.cardText}>desde {formatCLP(from)}</Text> : null}
           </View>
         </View>
-        <Text style={{ fontSize: 22, color: colors.primary }}>›</Text>
+        <Icon name="chevron" size={20} color={colors.muted} />
       </View>
     </Card>
   );
@@ -353,11 +373,27 @@ export function BusinessTile({ business, onPress }: { business: Business; onPres
   );
 }
 
-export function EmptyState({ icon, title, text, action }: { icon: string; title: string; text: string; action?: ReactNode }) {
+export function EmptyState({
+  icon,
+  title,
+  text,
+  action,
+  tone = 'primary',
+}: {
+  icon: IconName;
+  title: string;
+  text: string;
+  action?: ReactNode;
+  tone?: 'primary' | 'mint' | 'danger';
+}) {
+  const bg = tone === 'mint' ? colors.mintSoft : tone === 'danger' ? colors.dangerSoft : colors.primarySoft;
+  const fg = tone === 'mint' ? colors.mint : tone === 'danger' ? colors.danger : colors.primary;
   return (
-    <View style={{ alignItems: 'center', paddingVertical: 32, gap: 8 }}>
-      <Text style={{ fontSize: 42 }}>{icon}</Text>
-      <Text style={[styles.cardTitle, { textAlign: 'center' }]}>{title}</Text>
+    <View style={{ alignItems: 'center', paddingVertical: 32, gap: 10 }}>
+      <View style={{ width: 84, height: 84, borderRadius: 28, backgroundColor: bg, alignItems: 'center', justifyContent: 'center', marginBottom: 4 }}>
+        <Icon name={icon} size={38} color={fg} strokeWidth={1.75} />
+      </View>
+      <Text style={[styles.title, { fontSize: 20, textAlign: 'center' }]}>{title}</Text>
       <Text style={[styles.cardText, { textAlign: 'center', maxWidth: 360 }]}>{text}</Text>
       {action ? <View style={{ marginTop: 8, alignSelf: 'stretch' }}>{action}</View> : null}
     </View>
@@ -366,42 +402,53 @@ export function EmptyState({ icon, title, text, action }: { icon: string; title:
 
 export const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  header: { backgroundColor: colors.card, borderBottomWidth: 1, borderBottomColor: colors.border },
+  header: { backgroundColor: colors.bg },
   headerInner: {
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
-    height: 52,
+    height: 56,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   back: { fontSize: 17, color: colors.primary, fontWeight: '600' },
+  backBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 14,
+    backgroundColor: colors.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...shadow.card,
+  },
   scroll: { paddingBottom: 32 },
-  content: { width: '100%', alignSelf: 'center', paddingHorizontal: 16, paddingTop: 20, gap: 12 },
-  title: { fontSize: 26, fontWeight: '800', color: colors.text },
+  content: { width: '100%', alignSelf: 'center', paddingHorizontal: 20, paddingTop: 8, gap: 14 },
+  title: { fontSize: 28, fontWeight: '800', color: colors.text, letterSpacing: -0.6 },
   subtitle: { fontSize: 15, color: colors.muted, marginTop: -4, marginBottom: 4 },
-  section: { fontSize: 13, fontWeight: '700', color: colors.muted, textTransform: 'uppercase', letterSpacing: 0.6 },
-  footer: { backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.border },
-  footerInner: { width: '100%', alignSelf: 'center', padding: 16, gap: 8 },
+  section: { fontSize: 19, fontWeight: '800', color: colors.text, letterSpacing: -0.3 },
+  footer: { backgroundColor: colors.card, borderTopLeftRadius: 24, borderTopRightRadius: 24, ...shadow.float },
+  footerInner: { width: '100%', alignSelf: 'center', paddingHorizontal: 20, paddingVertical: 16, gap: 10 },
   tabBar: { backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.border },
   tabBarInner: { width: '100%', maxWidth: MAX_WIDTH, alignSelf: 'center', flexDirection: 'row' },
-  tab: { flex: 1, alignItems: 'center', paddingVertical: 8, gap: 2 },
+  tab: { flex: 1, alignItems: 'center', paddingTop: 8, paddingBottom: 6, gap: 3 },
+  tabPill: { paddingHorizontal: 16, paddingVertical: 4, borderRadius: 999 },
   tabLabel: { fontSize: 11, fontWeight: '700', color: colors.muted },
   card: {
     backgroundColor: colors.card,
-    borderRadius: radius.md,
-    borderWidth: 1.5,
-    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    borderColor: 'transparent',
     padding: 14,
+    ...shadow.card,
   },
-  cardSelected: { borderColor: colors.primary, backgroundColor: colors.primarySoft },
-  button: { borderRadius: radius.md, paddingVertical: 14, paddingHorizontal: 16, alignItems: 'center' },
-  buttonPrimary: { backgroundColor: colors.primary },
-  buttonSecondary: { backgroundColor: colors.card, borderWidth: 1.5, borderColor: colors.primary },
-  buttonDanger: { backgroundColor: colors.card, borderWidth: 1.5, borderColor: colors.dangerSoft },
-  buttonDisabled: { opacity: 0.4 },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  cardSelected: { borderColor: colors.primary },
+  button: { borderRadius: radius.md, paddingVertical: 15, paddingHorizontal: 16, alignItems: 'center' },
+  buttonPrimary: { backgroundColor: colors.primary, ...shadow.card },
+  buttonSecondary: { backgroundColor: colors.primarySoft },
+  buttonDanger: { backgroundColor: colors.dangerSoft },
+  buttonDisabled: { opacity: 0.38 },
+  buttonText: { color: colors.onPrimary, fontSize: 16, fontWeight: '700' },
   chip: {
     paddingVertical: 10,
     paddingHorizontal: 14,
@@ -414,10 +461,10 @@ export const styles = StyleSheet.create({
   },
   chipSelected: { backgroundColor: colors.primary, borderColor: colors.primary },
   chipText: { fontSize: 15, color: colors.text, fontWeight: '600' },
-  chipTextSelected: { color: '#fff' },
-  segmented: { flexDirection: 'row', backgroundColor: colors.border, borderRadius: radius.sm, padding: 3 },
-  segment: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 6 },
-  segmentOn: { backgroundColor: colors.card },
+  chipTextSelected: { color: colors.onPrimary },
+  segmented: { flexDirection: 'row', backgroundColor: colors.sunken, borderRadius: radius.sm, padding: 4 },
+  segment: { paddingVertical: 7, paddingHorizontal: 14, borderRadius: 9 },
+  segmentOn: { backgroundColor: colors.card, ...shadow.card },
   segmentText: { fontSize: 13, fontWeight: '700', color: colors.muted },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
@@ -431,9 +478,9 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1.5,
     borderColor: colors.border,
-    borderRadius: radius.md,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
     fontSize: 16,
     color: colors.text,
     // En web, quitamos el borde negro del navegador; el borde del campo ya marca el foco.
@@ -443,21 +490,20 @@ export const styles = StyleSheet.create({
   error: { fontSize: 13, color: colors.danger, marginTop: 4 },
   hint: { fontSize: 13, color: colors.muted, marginTop: 4 },
   thumb: {
-    width: 60,
-    height: 60,
-    borderRadius: radius.md,
+    width: 64,
+    height: 64,
+    borderRadius: 14,
     backgroundColor: colors.primarySoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
   tile: {
-    width: 170,
+    width: 220,
     backgroundColor: colors.card,
-    borderRadius: radius.md,
-    borderWidth: 1.5,
-    borderColor: colors.border,
+    borderRadius: radius.lg,
     overflow: 'hidden',
+    ...shadow.card,
   },
-  tileCover: { height: 110, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' },
+  tileCover: { height: 130, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' },
   divider: { height: 1, backgroundColor: colors.border, marginVertical: 10 },
 });

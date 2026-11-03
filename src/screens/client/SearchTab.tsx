@@ -3,6 +3,7 @@ import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { Card, Chip, Cover, EmptyState, Rating, SectionTitle, styles } from '../../components';
 import { categories, categoryOf } from '../../data';
 import { useStore } from '../../store';
+import { Icon } from '../../icons';
 import { colors, radius } from '../../theme';
 import { formatCLP, formatDuration, norm } from '../../utils';
 
@@ -44,13 +45,13 @@ export function SearchTab() {
           alignItems: 'center',
           gap: 8,
           backgroundColor: colors.card,
-          borderWidth: 1.5,
+          borderWidth: 2,
           borderColor: colors.primary,
           borderRadius: radius.md,
-          paddingHorizontal: 14,
+          paddingHorizontal: 16,
         }}
       >
-        <Text style={{ fontSize: 16 }}>🔍</Text>
+        <Icon name="search" size={20} color={colors.primary} />
         <TextInput
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -62,7 +63,7 @@ export function SearchTab() {
         />
         {searchQuery ? (
           <Pressable onPress={() => setSearchQuery('')} accessibilityLabel="Borrar búsqueda" hitSlop={8}>
-            <Text style={{ fontSize: 16, color: colors.muted }}>✕</Text>
+            <Icon name="x" size={18} color={colors.muted} />
           </Pressable>
         ) : null}
       </View>
@@ -96,7 +97,7 @@ export function SearchTab() {
       </SectionTitle>
 
       {results.length === 0 ? (
-        <EmptyState icon="🤔" title="No encontramos resultados" text="Prueba con otra palabra, por ejemplo “corte”, “uñas” o “masaje”, o quita el filtro de categoría." />
+        <EmptyState icon="compass" title="No encontramos resultados" text="Prueba con otra palabra, por ejemplo “corte”, “uñas” o “masaje”, o quita el filtro de categoría." />
       ) : (
         results.map(({ b, matchingServices }) => (
           <Card key={b.id} onPress={() => startBooking(b.id)}>
@@ -126,7 +127,7 @@ export function SearchTab() {
                       <Text style={[styles.cardText, { fontSize: 12 }]}>{formatDuration(s.durationMin)}</Text>
                     </View>
                     <Text style={[styles.price, { fontSize: 14 }]}>{formatCLP(s.price)}</Text>
-                    <Text style={{ color: colors.primary, fontWeight: '700' }}>Reservar ›</Text>
+                    <Text style={{ color: colors.primary, fontWeight: '700' }}>Reservar</Text>
                   </Pressable>
                 ))}
               </View>

@@ -1,9 +1,12 @@
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
-import { BusinessRow, BusinessTile, Card, LinkText, SectionTitle, styles } from '../../components';
+import { LinearGradient } from 'expo-linear-gradient';
+
+import { BusinessRow, BusinessTile, LinkText, SectionTitle, styles } from '../../components';
+import { Icon } from '../../icons';
 import { categories } from '../../data';
 import { useStore } from '../../store';
-import { colors, radius } from '../../theme';
+import { colors, photoGradients, radius } from '../../theme';
 
 export function HomeTab() {
   const { businesses, account, session, setClientTab, setSearchCategory, setSearchQuery, startBooking, go } = useStore();
@@ -20,7 +23,13 @@ export function HomeTab() {
 
   return (
     <>
-      <Text style={styles.title}>{firstName ? `Hola, ${firstName} 👋` : '¿Qué hora necesitas hoy?'}</Text>
+      <View style={{ gap: 2 }}>
+        <View style={[styles.row, { gap: 4 }]}>
+          <Icon name="pin" size={14} color={colors.primary} />
+          <Text style={styles.cardText}>Santiago, Chile</Text>
+        </View>
+        <Text style={styles.title}>{firstName ? `Hola, ${firstName} 👋` : '¿Qué te hace falta hoy?'}</Text>
+      </View>
 
       <Pressable
         onPress={() => openSearch()}
@@ -33,52 +42,59 @@ export function HomeTab() {
           borderWidth: 1.5,
           borderColor: colors.border,
           borderRadius: radius.md,
-          paddingHorizontal: 14,
-          paddingVertical: 13,
+          paddingHorizontal: 16,
+          paddingVertical: 14,
         }}
       >
-        <Text style={{ fontSize: 16 }}>🔍</Text>
-        <Text style={{ color: colors.muted, fontSize: 16 }}>Busca un servicio: corte, manicure, masaje…</Text>
+        <Icon name="search" size={20} color={colors.muted} />
+        <Text style={{ color: colors.muted, fontSize: 16 }} numberOfLines={1}>
+          ¿Qué servicio buscas?
+        </Text>
       </Pressable>
 
-      {session?.role === 'guest' ? (
-        <Card style={{ backgroundColor: colors.primarySoft, borderColor: colors.primarySoft, gap: 6 }}>
-          <Text style={styles.cardTitle}>Estás como invitado</Text>
-          <Text style={styles.cardText}>Puedes reservar igual. Crea tu cuenta para guardar tus horas y reservar más rápido.</Text>
-          <LinkText label="Crear cuenta gratis ›" onPress={() => go({ name: 'register', role: 'client' })} />
-        </Card>
-      ) : null}
-
-      <SectionTitle>Categorías</SectionTitle>
-      <View style={styles.wrap}>
-        {categories.map((c) => (
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
+        {categories.map((c, i) => (
           <Pressable
             key={c.id}
             onPress={() => openSearch(c.id)}
             accessibilityRole="button"
-            style={{
-              width: 80,
-              alignItems: 'center',
-              gap: 4,
-              paddingVertical: 10,
-              backgroundColor: colors.card,
-              borderRadius: radius.md,
-              borderWidth: 1.5,
-              borderColor: colors.border,
-            }}
+            accessibilityLabel={c.label}
+            style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1 }]}
           >
-            <Text style={{ fontSize: 26 }}>{c.emoji}</Text>
-            <Text style={{ fontSize: 12, fontWeight: '700', color: colors.text }}>{c.label}</Text>
+            <LinearGradient
+              colors={photoGradients[i % photoGradients.length]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{ width: 112, height: 84, borderRadius: radius.md, padding: 10, justifyContent: 'space-between' }}
+            >
+              <Text style={{ fontSize: 22 }}>{c.emoji}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '800', color: colors.onPrimary }}>{c.label}</Text>
+            </LinearGradient>
           </Pressable>
         ))}
-      </View>
+      </ScrollView>
 
       <SectionTitle action={<LinkText label="Ver todos" onPress={() => openSearch()} />}>Más visitados</SectionTitle>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingVertical: 4, paddingHorizontal: 2 }}>
         {mostVisited.map((b) => (
           <BusinessTile key={b.id} business={b} onPress={() => startBooking(b.id)} />
         ))}
       </ScrollView>
+
+      {session?.role === 'guest' ? (
+        <Pressable
+          onPress={() => go({ name: 'register', role: 'client' })}
+          accessibilityRole="button"
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.primarySoft, borderRadius: radius.lg, padding: 16 }}
+        >
+          <Icon name="sparkle" size={22} color={colors.primary} />
+          <View style={{ flex: 1, gap: 2 }}>
+            <Text style={[styles.cardTitle, { color: colors.primaryDark }]}>Estás como invitado</Text>
+            <Text style={[styles.cardText, { color: colors.text }]}>Puedes reservar igual. Crea tu cuenta gratis para guardar tus horas y favoritos.</Text>
+          </View>
+          <Icon name="chevron" size={20} color={colors.primary} />
+        </Pressable>
+      ) : null}
 
       <SectionTitle>Mejor evaluados</SectionTitle>
       {topRated.map((b) => (

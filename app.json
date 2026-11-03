@@ -11,7 +11,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#EEEBFF",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -22,7 +22,7 @@
       "favicon": "./assets/favicon.png",
       "name": "PidoHora",
       "shortName": "PidoHora",
-      "themeColor": "#0E7C66",
+      "themeColor": "#5B4CF5",
       "bundler": "metro"
     },
     "scheme": "pidohora"

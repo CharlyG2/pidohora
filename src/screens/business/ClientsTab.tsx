@@ -43,7 +43,7 @@ export function ClientsTab() {
         nativeID="clients-search"
       />
       {clients.length === 0 ? (
-        <EmptyState icon="👥" title="Sin clientes todavía" text="Cuando te reserven, aquí verás a cada cliente con sus visitas y lo que ha gastado." />
+        <EmptyState icon="users" tone="mint" title="Sin clientes todavía" text="Cuando te reserven, aquí verás a cada cliente con sus visitas y lo que ha gastado." />
       ) : (
         clients.map((c) => (
           <Card key={c.phone}>
