@@ -27,3 +27,5 @@ datos que algún navegador tenga guardados.
 
 - Proteger `main`: exigir la revisión automática en verde antes de unir y bloquear borrado y reescritura.
 - Activar el escaneo de secretos y la protección de push (Settings › Code security).
+- Activar el reporte privado de vulnerabilidades (Settings › Code security › Private vulnerability reporting): es el canal que indica `SECURITY.md`.
+- Cuando exista un correo real del dominio (por ejemplo seguridad@pidohora.cl), agregarlo a `SECURITY.md`. El sitio aún muestra hola@pidohora.cl, que no existe.
