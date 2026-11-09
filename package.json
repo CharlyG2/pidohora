@@ -1,34 +1,19 @@
 {
-  "name": "pidohora",
-  "version": "1.0.0",
-  "main": "index.ts",
-  "dependencies": {
-    "@expo-google-fonts/plus-jakarta-sans": "^0.4.2",
-    "@expo/metro-runtime": "~58.0.16",
-    "expo": "~58.0.22",
-    "expo-font": "~58.0.11",
-    "expo-linear-gradient": "~58.0.3",
-    "expo-location": "~58.0.20",
-    "expo-status-bar": "~58.0.4",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "react-native": "0.88.1",
-    "react-native-safe-area-context": "~5.10.1",
-    "react-native-svg": "^15.16.0",
-    "react-native-web": "~0.21.4"
+  "name": "pidohora-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "mobile": "npm run start -w @pidohora/mobile",
+    "mobile:web": "npm run web -w @pidohora/mobile",
+    "web": "npm run dev -w @pidohora/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "build:web": "npm run build -w @pidohora/web"
   },
   "devDependencies": {
-    "@types/react": "~19.3.0",
-    "typescript": "~6.0.3",
-    "vitest": "^3.2.7"
-  },
-  "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit"
-  },
-  "private": true
+    "typescript": "~6.0.3"
+  }
 }

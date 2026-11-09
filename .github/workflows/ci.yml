@@ -8,8 +8,8 @@ on:
     branches: [main]
 
 jobs:
-  app:
-    name: App (Expo) — tipos y pruebas
+  revision:
+    name: Tipos, pruebas y compilación
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,28 +18,16 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run typecheck
-      - run: npm test
+      - name: Tipos (app, web, core, tokens)
+        run: npm run typecheck
+      - name: Pruebas
+        run: npm test
         env:
           TZ: America/Santiago
-
-  web:
-    name: Web (Vite) — tipos y compilación
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            web/package-lock.json
-      # La web usa código de ../src y su configuración, así que necesita también lo de la raíz.
-      - run: npm ci
-        working-directory: .
-      - run: npm ci
-      - run: npm run build
+      - name: Compilar la web
+        run: npm run build:web
+      - name: Compilar la app para web (Expo)
+        run: npx expo export --platform web
+        working-directory: apps/mobile
+        env:
+          CI: 1

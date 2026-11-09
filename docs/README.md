@@ -14,7 +14,8 @@
 ## Revisiones locales
 
 ```bash
-npm run typecheck   # tipos de la app
-npm test            # pruebas de la lógica (horas libres, formatos, ubicación)
-cd web && npm run build   # tipos y compilación de la web (requiere npm install en la raíz y en web/)
+npm install         # una vez, en la raíz
+npm run typecheck   # tipos de app, web, core y tokens
+npm test            # pruebas (horas libres, formatos, ubicación, contraste de colores)
+npm run build:web   # compilación de la web
 ```
