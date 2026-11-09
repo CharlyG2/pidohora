@@ -21,7 +21,11 @@ function load(): State {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const saved = { place: null, bookings: [], name: '', phone: '', ...JSON.parse(raw) } as State;
-      return { ...saved, bookings: cleanBookings(saved.bookings) };
+      const bookings = cleanBookings(saved.bookings);
+      if (bookings.length !== saved.bookings.length) {
+        localStorage.setItem(KEY, JSON.stringify({ ...saved, bookings }));
+      }
+      return { ...saved, bookings };
     }
   } catch {
     /* sin almacenamiento: seguimos con lo de fábrica */
