@@ -21,6 +21,10 @@ App para pedir hora en negocios de servicios: barberías, estética, psicología
 3. Confirmaciones y recordatorios por WhatsApp.
 4. Pagos reales con Mercado Pago o Webpay (pagos divididos).
 
+## Documentación y plan
+
+La auditoría, la arquitectura acordada (Supabase, monorepo, Next.js, Expo Router) y el registro de decisiones están en [`docs/`](docs/README.md).
+
 ## Cómo correrla
 
 ```bash
@@ -29,7 +33,7 @@ npm run web      # en el navegador
 npm start        # y escanear el QR con Expo Go en el celular
 ```
 
-Revisión de tipos: `npx tsc --noEmit`.
+Revisión de tipos: `npm run typecheck`. Pruebas: `npm test`. Las dos corren solas en cada PR (GitHub Actions).
 
 ## Estilo visual (v3)
 
