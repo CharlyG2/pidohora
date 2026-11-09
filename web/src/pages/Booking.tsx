@@ -91,7 +91,10 @@ export default function BookingPage({ id, service }: { id: string; service?: str
             <Icon name="check" size={34} strokeWidth={3} />
           </span>
           <h1 className="h1">¡Listo, tu hora está reservada!</h1>
-          <p className="muted">Te enviamos la confirmación por WhatsApp al {done.clientPhone}. Te recordaremos un día antes.</p>
+          <p className="note">
+            Versión de prueba: esta reserva se guarda solo en este navegador. No llega al negocio y no se envía ningún
+            WhatsApp.
+          </p>
           <dl className="summary-list">
             <div>
               <dt>Lugar</dt>

@@ -1,6 +1,7 @@
 # Documentación de PidoHora
 
 - [Auditoría y plan SaaS (noviembre 2026)](auditoria-2026-11.md): estado del prototipo, arquitectura propuesta, base de datos, roadmap, riesgos y costos.
+- [Auditoría técnica y de seguridad v2 (noviembre 2026)](auditoria-seguridad-2026-11.md): hallazgos de seguridad, calidad y DevOps, con su estado.
 - [Decisiones de arquitectura (ADR)](decisiones/): cada decisión técnica importante, por qué se tomó y qué se descartó.
 
 ## Cómo se trabaja
@@ -15,6 +16,6 @@
 
 ```bash
 npm run typecheck   # tipos de la app
-npm test            # pruebas de la lógica (horas libres, formatos, ubicación)
+npm test            # pruebas de la lógica (horas libres, formatos, ubicación, limpieza de datos guardados)
 cd web && npm run build   # tipos y compilación de la web (requiere npm install en la raíz y en web/)
 ```

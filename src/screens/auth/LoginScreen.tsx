@@ -10,7 +10,7 @@ export function LoginScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const submit = (e = email, p = password) => setError(login(e, p));
+  const submit = (e = email) => setError(login(e));
 
   return (
     <Screen title="Iniciar sesión" subtitle="Clientes y negocios entran por aquí.">
@@ -33,6 +33,9 @@ export function LoginScreen() {
         onSubmitEditing={() => submit()}
         nativeID="login-password"
       />
+      <Text style={styles.cardText}>
+        Versión de prueba: no guardamos ni revisamos contraseñas. No uses la contraseña real de tu correo.
+      </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button label="Entrar" onPress={() => submit()} disabled={!email || !password} />
       <View style={[styles.row, { justifyContent: 'center' }]}>
@@ -43,8 +46,8 @@ export function LoginScreen() {
       <Card style={{ marginTop: 16, gap: 10 }}>
         <Text style={styles.cardTitle}>Cuentas de prueba</Text>
         <Text style={styles.cardText}>Para recorrer el prototipo sin registrarte:</Text>
-        <Button label="Entrar como negocio (Barbería El Corte)" variant="secondary" onPress={() => submit('negocio@pidohora.cl', '1234')} />
-        <Button label="Entrar como cliente (Camila)" variant="secondary" onPress={() => submit('cliente@pidohora.cl', '1234')} />
+        <Button label="Entrar como negocio (Barbería El Corte)" variant="secondary" onPress={() => submit('negocio@pidohora.cl')} />
+        <Button label="Entrar como cliente (Camila)" variant="secondary" onPress={() => submit('cliente@pidohora.cl')} />
       </Card>
     </Screen>
   );

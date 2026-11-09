@@ -5,7 +5,7 @@ App para pedir hora en negocios de servicios: barberías, estética, psicología
 ## Estado actual (versión 2 del prototipo)
 
 - **Entrada:** crear cuenta (cliente o negocio), iniciar sesión o seguir como invitado.
-  Cuentas de prueba: `negocio@pidohora.cl` / `1234` y `cliente@pidohora.cl` / `1234`.
+  Cuentas de prueba: `negocio@pidohora.cl` y `cliente@pidohora.cl` (en el prototipo la contraseña no se guarda ni se revisa; no uses una real).
 - **Cliente (con o sin cuenta):** inicio con categorías, más visitados, mejor evaluados y nuevos;
   buscador por servicio; ficha del negocio con servicios, equipo, horario y reseñas; reserva con
   varios servicios, profesional o "cualquiera", día y hora libres; "Mis horas" con próximas y anteriores.
@@ -33,7 +33,7 @@ npm run web      # en el navegador
 npm start        # y escanear el QR con Expo Go en el celular
 ```
 
-Revisión de tipos: `npm run typecheck`. Pruebas: `npm test`. Las dos corren solas en cada PR (GitHub Actions).
+Revisión de tipos: `npm run typecheck`. Pruebas: `npm test`. Las dos corren solas en cada PR (GitHub Actions), junto con una revisión de librerías vulnerables y de llaves secretas. Para reportar una falla de seguridad, ver [`SECURITY.md`](SECURITY.md).
 
 ## Estilo visual (v3)
 

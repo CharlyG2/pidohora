@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { seedBusinesses, type Booking, type Business } from '../../src/data';
 import { businessPoint, distanceKm, findComuna, nearestComuna, NEARBY_KM } from '../../src/location';
+import { cleanBookings } from '../../src/persist';
 
 export type Place = { source: 'gps' | 'comuna'; label: string; lat: number; lng: number };
 
@@ -18,7 +19,10 @@ const DEFAULT_PLACE: Place = (() => {
 function load(): State {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return { place: null, bookings: [], name: '', phone: '', ...JSON.parse(raw) };
+    if (raw) {
+      const saved = { place: null, bookings: [], name: '', phone: '', ...JSON.parse(raw) } as State;
+      return { ...saved, bookings: cleanBookings(saved.bookings) };
+    }
   } catch {
     /* sin almacenamiento: seguimos con lo de fábrica */
   }

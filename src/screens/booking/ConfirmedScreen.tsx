@@ -56,6 +56,11 @@ export function ConfirmedScreen({ bookingId }: { bookingId: string }) {
         <Text style={styles.cardText}>{b.address}</Text>
       </Card>
 
+      <Card style={{ backgroundColor: colors.warningSoft, borderColor: colors.warningSoft }}>
+        <Text style={styles.cardTitle}>Versión de prueba</Text>
+        <Text style={styles.cardText}>Esta reserva no llega al negocio. Es solo para recorrer el prototipo.</Text>
+      </Card>
+
       <Card style={{ backgroundColor: colors.primarySoft, borderColor: colors.primarySoft }}>
         <Text style={styles.cardTitle}>💬 Te escribiremos por WhatsApp</Text>
         <Text style={styles.cardText}>
