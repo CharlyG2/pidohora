@@ -16,5 +16,5 @@
 ```bash
 npm run typecheck   # tipos de la app
 npm test            # pruebas de la lógica (horas libres, formatos, ubicación)
-cd web && npm run build   # tipos y compilación de la web
+cd web && npm run build   # tipos y compilación de la web (requiere npm install en la raíz y en web/)
 ```

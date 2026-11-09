@@ -51,7 +51,7 @@ busca con filtros, mira la ficha de cada negocio y reserva. También tiene "Mis 
 "Para negocios" con los planes. Usa los mismos datos de ejemplo y la misma lógica de horas libres
 y ubicación que la app (`src/data.ts`, `src/utils.ts`, `src/location.ts`).
 
-- Probar en tu computador: `cd web && npm install && npm run dev`
+- Probar en tu computador: `npm install && cd web && npm install && npm run dev` (la web usa código de la raíz, por eso se instala primero lo de la raíz)
 - Publicar: se construye con `BASE_PATH=/pidohora/ npm run build` y se sube a la rama `gh-pages`
   (GitHub Pages). La web queda en `https://charlyg2.github.io/pidohora/` y la app (versión web de
   la app del celular) en `https://charlyg2.github.io/pidohora/app/`.
