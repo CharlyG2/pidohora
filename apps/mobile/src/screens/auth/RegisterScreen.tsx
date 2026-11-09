@@ -89,7 +89,7 @@ export function RegisterScreen({ role: initialRole }: { role: 'client' | 'busine
       <Field label="Nombre" value={name} onChangeText={setName} placeholder="Ej: Camila González" autoComplete="name" error={show('name')} nativeID="reg-name" />
       <Field label="Correo" value={email} onChangeText={setEmail} placeholder="tucorreo@ejemplo.cl" keyboardType="email-address" autoCapitalize="none" error={show('email')} nativeID="reg-email" />
       <Field label="WhatsApp" value={phone} onChangeText={setPhone} keyboardType="phone-pad" error={show('phone')} hint="Aquí llegan las confirmaciones y recordatorios." nativeID="reg-phone" />
-      <Field label="Contraseña" value={password} onChangeText={setPassword} secureTextEntry error={show('password')} nativeID="reg-password" />
+      <Field label="Contraseña" value={password} onChangeText={setPassword} secureTextEntry error={show('password')} hint="Versión de prueba: no la guardamos. No uses tu contraseña real." nativeID="reg-password" />
       {!isBiz ? (
         <View style={{ gap: 6 }}>
           <Text style={styles.label}>¿En qué comuna vives? (opcional)</Text>

@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { seedBusinesses, type Booking, type Business } from '@pidohora/core/data';
 import { businessPoint, distanceKm, findComuna, nearestComuna, NEARBY_KM } from '@pidohora/core/location';
+import { cleanBookings } from '@pidohora/core/persist';
 
 export type Place = { source: 'gps' | 'comuna'; label: string; lat: number; lng: number };
 
@@ -18,7 +19,14 @@ const DEFAULT_PLACE: Place = (() => {
 function load(): State {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return { place: null, bookings: [], name: '', phone: '', ...JSON.parse(raw) };
+    if (raw) {
+      const saved = { place: null, bookings: [], name: '', phone: '', ...JSON.parse(raw) } as State;
+      const bookings = cleanBookings(saved.bookings);
+      if (bookings.length !== saved.bookings.length) {
+        localStorage.setItem(KEY, JSON.stringify({ ...saved, bookings }));
+      }
+      return { ...saved, bookings };
+    }
   } catch {
     /* sin almacenamiento: seguimos con lo de fábrica */
   }

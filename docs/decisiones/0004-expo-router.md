@@ -13,7 +13,7 @@ Migrar la navegación a Expo Router (rutas por archivos), conservando las pantal
 
 ## Por qué
 
-- Enlaces profundos (`pidohora://negocio/innovva`) y direcciones en web sin trabajo extra.
+- Enlaces profundos (`pidohora://negocio/barberia-el-corte`) y direcciones en web sin trabajo extra.
 - Pestañas y pilas nativas, gestos de volver correctos en iPhone y Android.
 - Es la navegación recomendada por Expo para el SDK actual.
 

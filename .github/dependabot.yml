@@ -1,0 +1,28 @@
+# Dependabot abre PRs pequeños cuando hay versiones nuevas o arreglos de seguridad.
+version: 2
+updates:
+  # Monorepo: un solo package-lock.json en la raíz cubre apps/* y packages/*.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    # Expo fija versiones compatibles entre sí: esas se suben juntas al cambiar de SDK (npx expo install --fix),
+    # no una por una. Dependabot igual avisa de arreglos de seguridad.
+    ignore:
+      - dependency-name: 'expo'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'expo-*'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: '@expo/*'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'react-native*'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'react'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'react-dom'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
