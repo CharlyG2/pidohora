@@ -116,6 +116,7 @@ export default function BusinessPage({ id }: { id: string }) {
             <h2 id="resenas" className="h2">
               Reseñas <span className="muted">({b.reviewsCount})</span>
             </h2>
+            {b.reviews.length === 0 && <p className="muted">Calificación {b.rating.toString().replace('.', ',')} de 5 según {b.reviewsCount} clientes. Los comentarios aparecerán aquí a medida que reserven por PidoHora.</p>}
             <div className="reviews">
               {b.reviews.map((r, i) => (
                 <article key={i} className="review card">
@@ -161,6 +162,11 @@ export default function BusinessPage({ id }: { id: string }) {
               </span>
             </div>
             <p className="small">{b.address}</p>
+            {b.phone && (
+              <a className="link small" href={`https://wa.me/${b.phone.replace(/\D/g, '')}`} target="_blank" rel="noreferrer">
+                WhatsApp {b.phone}
+              </a>
+            )}
             <a className="link small" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(b.address)}`} target="_blank" rel="noreferrer">
               Cómo llegar
             </a>

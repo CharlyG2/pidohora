@@ -145,7 +145,7 @@ img, svg { display: block; }
 .locbtn-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .locbtn.light { border: 0; background: transparent; min-height: 52px; max-width: none; font-size: 15px; }
 .topnav { display: flex; align-items: center; gap: 4px; }
-.topnav a:not(.btn) { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px; font-weight: 600; font-size: 15px; }
+.topnav a:not(.btn) { white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px; font-weight: 600; font-size: 15px; }
 .topnav a:not(.btn):hover { background: var(--hundido); }
 .count { background: var(--coral); color: #fff; border-radius: 999px; font-size: 11px; padding: 1px 7px; font-weight: 800; }
 .menu-btn { display: none; }

@@ -28,6 +28,8 @@ export type Business = {
   lat?: number;
   lng?: number;
   address: string;
+  /** Teléfono o WhatsApp del negocio, si lo tenemos. */
+  phone?: string;
   description: string;
   rating: number;
   reviewsCount: number;
@@ -335,6 +337,46 @@ export const seedBusinesses: Business[] = [
     ],
     professionals: [pro('kevin', 'Kevin', 'Barbero', 1), pro('bryan', 'Bryan', 'Barbero', 2)],
     reviews: [{ author: 'Lucas F.', rating: 5, text: 'Buena onda y buen precio.', daysAgo: 5 }],
+    isNew: true,
+  },
+  {
+    // Negocio real (datos públicos de su página de AgendaPro, nov 2026).
+    id: 'innovva-barber-studio',
+    name: 'Barbería Innovva Studio',
+    category: 'barberia',
+    emoji: '💈',
+    comuna: 'La Florida',
+    address: 'Av. Vicuña Mackenna Oriente 6711, La Florida',
+    phone: '+56 9 2080 1809',
+    description:
+      'Barbería moderna con atención personalizada. Cortes con after shave, peinado con cera premium y bebestible, limpiezas faciales y packs.',
+    rating: 4.9,
+    reviewsCount: 76,
+    visits: 980,
+    hours: {
+      0: { open: 10, close: 19 },
+      1: { open: 11, close: 21 },
+      2: { open: 10, close: 21 },
+      3: { open: 10, close: 21 },
+      4: { open: 10, close: 21 },
+      5: { open: 10, close: 21 },
+      6: { open: 10, close: 20 },
+    },
+    services: [
+      { id: 'innovva-basico', name: 'Corte Innovva básico', durationMin: 60, price: 12000 },
+      { id: 'innovva-vip', name: 'Corte Innovva VIP', durationMin: 60, price: 14990 },
+      { id: 'innovva-barba', name: 'Perfilado o corte de barba', durationMin: 60, price: 12000 },
+      { id: 'innovva-facial', name: 'Limpieza facial', durationMin: 30, price: 12000 },
+      { id: 'innovva-vip-facial', name: 'Pack: Corte VIP + limpieza facial', durationMin: 60, price: 18000 },
+      { id: 'innovva-vip-barba', name: 'Pack: Corte VIP + barba', durationMin: 60, price: 22000 },
+      { id: 'innovva-full', name: 'Pack: Corte VIP + barba + limpieza facial', durationMin: 60, price: 30000 },
+    ],
+    professionals: [
+      pro('benjamin-g', 'Benjamín García', 'Barbero', 0),
+      pro('israel-b', 'Israel Barrientos', 'Barbero', 1),
+      pro('gaspar-g', 'Gaspar Gómez', 'Barbero', 2),
+    ],
+    reviews: [],
     isNew: true,
   },
 ];

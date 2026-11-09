@@ -83,7 +83,11 @@ function load(): Persisted {
     const raw = globalThis.localStorage?.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as Persisted;
-      if (parsed.version === 2) return parsed;
+      if (parsed.version === 2) {
+        // Suma los negocios de ejemplo nuevos que no estaban cuando se guardaron los datos.
+        const missing = seedBusinesses.filter((sb) => !parsed.businesses.some((b) => b.id === sb.id));
+        return missing.length ? { ...parsed, businesses: [...parsed.businesses, ...missing] } : parsed;
+      }
     }
   } catch {
     // almacenamiento bloqueado: seguimos con los datos de ejemplo
