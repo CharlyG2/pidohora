@@ -15,6 +15,7 @@ import {
   type CategoryId,
 } from './data';
 import { businessPoint, distanceKm, findComuna, nearestComuna } from './location';
+import { cleanSaved } from './persist';
 import { newId } from './utils';
 
 /** Pantallas que se apilan sobre la pantalla principal. */
@@ -84,9 +85,10 @@ function load(): Persisted {
     if (raw) {
       const parsed = JSON.parse(raw) as Persisted;
       if (parsed.version === 2) {
+        const saved = cleanSaved(parsed);
         // Suma los negocios de ejemplo nuevos que no estaban cuando se guardaron los datos.
-        const missing = seedBusinesses.filter((sb) => !parsed.businesses.some((b) => b.id === sb.id));
-        return missing.length ? { ...parsed, businesses: [...parsed.businesses, ...missing] } : parsed;
+        const missing = seedBusinesses.filter((sb) => !saved.businesses.some((b) => b.id === sb.id));
+        return missing.length ? { ...saved, businesses: [...saved.businesses, ...missing] } : saved;
       }
     }
   } catch {
@@ -108,6 +110,7 @@ type RegisterInput = {
   role: 'client' | 'business';
   name: string;
   email: string;
+  /** Se pide en el formulario, pero el prototipo no la guarda ni la revisa (ver docs/auditoria-seguridad-2026-11.md). */
   password: string;
   phone: string;
   businessName?: string;
@@ -130,7 +133,8 @@ type Store = {
 
   session: Session;
   account: Account | null;
-  login: (email: string, password: string) => string | null;
+  /** Prototipo: entra con el correo; la contraseña no se guarda ni se revisa. */
+  login: (email: string) => string | null;
   register: (input: RegisterInput) => string | null;
   continueAsGuest: () => void;
   logout: () => void;
@@ -217,9 +221,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
       session: data.session,
       account,
-      login: (email, password) => {
+      login: (email) => {
         const acc = data.accounts.find((a) => a.email.toLowerCase() === email.trim().toLowerCase());
-        if (!acc || acc.password !== password) return 'El correo o la contraseña no coinciden.';
+        if (!acc) return 'No encontramos una cuenta con ese correo.';
         setData((d) => ({ ...d, session: { role: acc.role, accountId: acc.id }, place: d.place ?? homePlace(acc.homeComuna) }));
         enterMain();
         return null;
@@ -264,7 +268,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           role: input.role,
           name: input.name.trim(),
           email: input.email.trim(),
-          password: input.password,
           phone: input.phone.trim(),
           businessId,
           homeComuna: input.role === 'client' ? findComuna(input.comuna)?.name : undefined,

@@ -7,13 +7,27 @@ on:
   push:
     branches: [main]
 
+# Mínimo privilegio: la revisión solo necesita leer el código.
+permissions:
+  contents: read
+
+# Si llega un cambio nuevo al mismo PR, se cancela la revisión anterior.
+concurrency:
+  group: revision-${{ github.ref }}
+  cancel-in-progress: true
+
+# Las acciones externas van fijadas por su huella (SHA) y no por nombre de versión,
+# para que nadie pueda cambiar su contenido sin que lo notemos. Dependabot las actualiza.
 jobs:
   app:
     name: App (Expo) — tipos y pruebas
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -22,16 +36,21 @@ jobs:
       - run: npm test
         env:
           TZ: America/Santiago
+      # Falla si alguna librería tiene una vulnerabilidad crítica conocida.
+      - run: npm audit --audit-level=critical
 
   web:
     name: Web (Vite) — tipos y compilación
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -43,3 +62,23 @@ jobs:
         working-directory: .
       - run: npm ci
       - run: npm run build
+      - run: npm audit --audit-level=critical
+
+  secretos:
+    name: Seguridad — sin llaves secretas en la app ni en la web
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      # La llave service_role de Supabase y cualquier llave privada solo pueden vivir en el servidor.
+      # Este paso revisa el código que llega al teléfono o al navegador y falla si encuentra una.
+      - name: Buscar llaves secretas en el código del cliente
+        run: |
+          patron='service_role|sb_secret_|SUPABASE_SERVICE|-----BEGIN [A-Z ]*PRIVATE KEY-----'
+          if grep -rInE "$patron" src web/src App.tsx index.ts app.json; then
+            echo "::error::Se encontró una llave secreta en código que se publica. Muévela a una Edge Function o a los secretos del servidor."
+            exit 1
+          fi
+          echo "Sin llaves secretas en el código del cliente."
