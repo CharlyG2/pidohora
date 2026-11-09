@@ -1,6 +1,7 @@
 # Dependabot abre PRs pequeños cuando hay versiones nuevas o arreglos de seguridad.
 version: 2
 updates:
+  # Monorepo: un solo package-lock.json en la raíz cubre apps/* y packages/*.
   - package-ecosystem: npm
     directory: /
     schedule:
@@ -21,11 +22,6 @@ updates:
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'react-dom'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
-  - package-ecosystem: npm
-    directory: /web
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
   - package-ecosystem: github-actions
     directory: /
     schedule:

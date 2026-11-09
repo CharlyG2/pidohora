@@ -19,8 +19,8 @@ concurrency:
 # Las acciones externas van fijadas por su huella (SHA) y no por nombre de versión,
 # para que nadie pueda cambiar su contenido sin que lo notemos. Dependabot las actualiza.
 jobs:
-  app:
-    name: App (Expo) — tipos y pruebas
+  revision:
+    name: Tipos, pruebas y compilación
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -32,36 +32,20 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run typecheck
-      - run: npm test
+      - name: Tipos (app, web, core, tokens)
+        run: npm run typecheck
+      - name: Pruebas
+        run: npm test
         env:
           TZ: America/Santiago
+      - name: Compilar la web
+        run: npm run build:web
+      - name: Compilar la app para web (Expo)
+        run: npx expo export --platform web
+        working-directory: apps/mobile
+        env:
+          CI: 1
       # Falla si alguna librería tiene una vulnerabilidad crítica conocida.
-      - run: npm audit --audit-level=critical
-
-  web:
-    name: Web (Vite) — tipos y compilación
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: web
-    steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            web/package-lock.json
-      # La web usa código de ../src y su configuración, así que necesita también lo de la raíz.
-      - run: npm ci
-        working-directory: .
-      - run: npm ci
-      - run: npm run build
       - run: npm audit --audit-level=critical
 
   secretos:
@@ -77,7 +61,7 @@ jobs:
       - name: Buscar llaves secretas en el código del cliente
         run: |
           patron='service_role|sb_secret_|SUPABASE_SERVICE|-----BEGIN [A-Z ]*PRIVATE KEY-----'
-          if grep -rInE "$patron" src web/src App.tsx index.ts app.json; then
+          if grep -rInE "$patron" apps/mobile/src apps/mobile/App.tsx apps/mobile/index.ts apps/mobile/app.json apps/web/src packages; then
             echo "::error::Se encontró una llave secreta en código que se publica. Muévela a una Edge Function o a los secretos del servidor."
             exit 1
           fi

@@ -19,8 +19,8 @@ compromete datos hoy; varios serían críticos si el código se conectara a una 
 
 ## Barbería Innovva Studio
 
-Se retiró de `src/data.ts` hasta tener el permiso escrito de su dueño. Sus datos siguen en el historial
-de Git (commit `b497b28`) para restaurarlos si acepta. Mientras tanto, `src/persist.ts` la quita de los
+Se retiró de `packages/core/src/data.ts` hasta tener el permiso escrito de su dueño. Sus datos siguen en el historial
+de Git (commit `b497b28`) para restaurarlos si acepta. Mientras tanto, `packages/core/src/persist.ts` la quita de los
 datos que algún navegador tenga guardados.
 
 ## Pendiente que solo puede hacer el dueño del repositorio en GitHub

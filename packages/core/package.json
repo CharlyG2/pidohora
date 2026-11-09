@@ -1,0 +1,24 @@
+{
+  "name": "@pidohora/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tipos, reglas de negocio, horas libres, formatos, validaciones y ubicación. Sin dependencias de interfaz: lo usan la app y la web.",
+  "type": "module",
+  "exports": {
+    "./data": "./src/data.ts",
+    "./utils": "./src/utils.ts",
+    "./location": "./src/location.ts",
+    "./persist": "./src/persist.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@pidohora/tokens": "*"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.3",
+    "vitest": "^5.1.0"
+  }
+}
