@@ -48,6 +48,30 @@ jobs:
       # Falla si alguna librería tiene una vulnerabilidad crítica conocida.
       - run: npm audit --audit-level=critical
 
+  base-de-datos:
+    name: Base de datos — migraciones, seguridad (RLS) y reservas
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - name: Aplicar migraciones y correr las pruebas
+        run: bash scripts/test-db.sh
+
   secretos:
     name: Seguridad — sin llaves secretas en la app ni en la web
     runs-on: ubuntu-latest
