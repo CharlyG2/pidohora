@@ -69,7 +69,7 @@ export function SettingsTab() {
                     alignItems: h ? 'flex-end' : 'flex-start',
                   }}
                 >
-                  <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: '#fff' }} />
+                  <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: colors.onPrimary }} />
                 </View>
                 <Text style={[styles.cardTitle, { fontSize: 14, width: 40 }]}>{DAY_NAMES[d]}</Text>
               </Pressable>

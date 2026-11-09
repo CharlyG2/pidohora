@@ -1,15 +1,17 @@
 import { Text, View } from 'react-native';
 
-import { Avatar, Button, Card, Rating, Screen, SectionTitle, styles } from '../../components';
+import { Avatar, Button, Card, Cover, Rating, Screen, SectionTitle, styles } from '../../components';
 import { categoryOf } from '../../data';
 import { useStore } from '../../store';
+import { Icon } from '../../icons';
+import { formatDistance } from '../../location';
 import { colors, radius } from '../../theme';
 import { formatCLP, formatDuration } from '../../utils';
 
 const DAY_NAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
 export function BusinessDetailScreen({ businessId }: { businessId: string }) {
-  const { business, draft, setDraft, go } = useStore();
+  const { business, draft, setDraft, go, distanceTo } = useStore();
   const b = business(businessId);
   if (!draft) return null;
 
@@ -49,29 +51,32 @@ export function BusinessDetailScreen({ businessId }: { businessId: string }) {
         </>
       }
     >
-      <View
-        style={{
-          height: 120,
-          borderRadius: radius.lg,
-          backgroundColor: colors.primarySoft,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Text style={{ fontSize: 64 }}>{b.emoji}</Text>
-      </View>
+      <Cover
+        business={b}
+        emojiSize={64}
+        style={{ height: 200, borderRadius: radius.lg, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' }}
+      />
       <View style={{ gap: 4 }}>
         <Text style={styles.title}>{b.name}</Text>
         <View style={[styles.row, { gap: 8, flexWrap: 'wrap' }]}>
           <Rating business={b} />
           <Text style={styles.cardText}>
             {categoryOf(b.category).label} · {b.comuna}
+            {distanceTo(b) != null ? <Text style={{ color: colors.primary, fontWeight: '700' }}> · {formatDistance(distanceTo(b)!)}</Text> : null}
           </Text>
         </View>
-        {b.address ? <Text style={styles.cardText}>📍 {b.address}</Text> : null}
-        <Text style={styles.cardText}>
-          🕒 Hoy: {todayHours ? `${todayHours.open}:00 a ${todayHours.close}:00` : 'cerrado'}
-        </Text>
+        {b.address ? (
+          <View style={[styles.row, { gap: 6 }]}>
+            <Icon name="pin" size={15} color={colors.muted} />
+            <Text style={styles.cardText}>{b.address}</Text>
+          </View>
+        ) : null}
+        <View style={[styles.row, { gap: 6 }]}>
+          <Icon name="clock" size={15} color={todayHours ? colors.success : colors.muted} />
+          <Text style={[styles.cardText, todayHours && { color: colors.success, fontWeight: '600' }]}>
+            {todayHours ? `Abierto hoy · ${todayHours.open}:00 a ${todayHours.close}:00` : 'Cerrado hoy'}
+          </Text>
+        </View>
         {b.description ? <Text style={[styles.cardText, { color: colors.text, marginTop: 4 }]}>{b.description}</Text> : null}
       </View>
 
@@ -86,7 +91,7 @@ export function BusinessDetailScreen({ businessId }: { businessId: string }) {
                   style={{
                     width: 24,
                     height: 24,
-                    borderRadius: 6,
+                    borderRadius: 8,
                     borderWidth: 2,
                     borderColor: isOn ? colors.primary : colors.border,
                     backgroundColor: isOn ? colors.primary : 'transparent',
@@ -94,7 +99,7 @@ export function BusinessDetailScreen({ businessId }: { businessId: string }) {
                     justifyContent: 'center',
                   }}
                 >
-                  {isOn ? <Text style={{ color: '#fff', fontWeight: '800' }}>✓</Text> : null}
+                  {isOn ? <Icon name="check" size={16} color={colors.onPrimary} strokeWidth={3} /> : null}
                 </View>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={styles.cardTitle}>{s.name}</Text>

@@ -14,6 +14,7 @@ import { BusinessMain } from './src/screens/business/BusinessMain';
 import { NewBookingScreen } from './src/screens/business/NewBookingScreen';
 import { ServiceEditScreen } from './src/screens/business/ServiceEditScreen';
 import { ClientMain } from './src/screens/client/ClientMain';
+import { LocationScreen } from './src/screens/client/LocationScreen';
 import { StoreProvider, useStore } from './src/store';
 
 function Router() {
@@ -43,6 +44,8 @@ function Router() {
       return <NewBookingScreen start={route.start} professionalId={route.professionalId} />;
     case 'serviceEdit':
       return <ServiceEditScreen serviceId={route.serviceId} />;
+    case 'location':
+      return <LocationScreen />;
   }
 }
 

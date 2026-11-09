@@ -1,0 +1,45 @@
+# Revisión automática: corre en cada PR y en cada cambio a main.
+# Si algo falla, GitHub marca el PR con una X roja y no conviene unirlo.
+name: Revisión
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  app:
+    name: App (Expo) — tipos y pruebas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+        env:
+          TZ: America/Santiago
+
+  web:
+    name: Web (Vite) — tipos y compilación
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            web/package-lock.json
+      # La web usa código de ../src y su configuración, así que necesita también lo de la raíz.
+      - run: npm ci
+        working-directory: .
+      - run: npm ci
+      - run: npm run build
