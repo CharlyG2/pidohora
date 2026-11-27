@@ -44,4 +44,4 @@ Docs: https://docs.expo.dev/eas/index.md
 
 ## Agents (subagents)
 
-Specialised Claude Code subagents live in `.claude/agents/` (`disenador-figma`, `critico-ux`, `figma-a-codigo`); the `/disenar` skill in `.claude/skills/disenar/` orchestrates them. The Figma MCP server is configured in `.mcp.json`. Explanation for the team: `docs/agentes.md`.
+Specialised Claude Code subagents live in `.claude/agents/` (`disenador-figma`, `figma-a-codigo`); the `/disenar` skill in `.claude/skills/disenar/` orchestrates them. The Figma MCP server is configured in `.mcp.json`. Explanation for the team: `docs/agentes.md`; how to build one: `docs/como-crear-un-agente.md`.
