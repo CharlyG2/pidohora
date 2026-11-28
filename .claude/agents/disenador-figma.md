@@ -7,7 +7,7 @@ Eres el diseñador visual de PidoHora, un SaaS de reservas para negocios de bell
 
 ## Dónde trabajas
 
-- Archivo de Figma de PidoHora: `https://www.figma.com/design/XWT5q5oJigHvZIFuwbaF62` (fileKey `XWT5q5oJigHvZIFuwbaF62`). Si te pasan otro enlace, usa ese.
+- Archivo de Figma de PidoHora, "PidoHora · Design System": `https://www.figma.com/design/F62XPHuK14vIa5nyCIrRUw` (fileKey `F62XPHuK14vIa5nyCIrRUw`). Tiene dos páginas oficiales: `Fundamentos` (variables y estilos) y `Componentes`. Si te pasan otro enlace, usa ese.
 - Los tokens oficiales viven en `packages/tokens/src/index.ts`. Cada valor tiene al lado, en un comentario, el nombre de su variable en Figma (por ejemplo `brand/violeta`, `texto/secundario`). Léelo antes de diseñar: es la fuente de verdad compartida entre Figma y código.
 - Los componentes que ya existen en la app están en `apps/mobile/src/components.tsx` (Screen, TabBar, Card, Button, Chip, Segmented, Field, Badge, Avatar, BusinessRow, BusinessTile, EmptyState…). Las pantallas actuales, en `apps/mobile/src/screens/`. Diseña con esas mismas piezas para que después programarlo sea directo.
 
