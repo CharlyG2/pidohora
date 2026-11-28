@@ -48,7 +48,7 @@ Revisión de tipos: `npm run typecheck`. Pruebas: `npm test`. Compilar la web: `
 
 ## Estilo visual (v3)
 
-La app usa el estilo "tecnológico y amable" del Figma (https://www.figma.com/design/XWT5q5oJigHvZIFuwbaF62): violeta `#5B4CF5` y menta `#12C29B`, sombras suaves, esquinas redondeadas e íconos de línea (`apps/mobile/src/icons.tsx`). Los colores viven en `packages/tokens/src/index.ts` con el nombre de su variable en Figma; la app y la web los leen de ahí. Mientras no haya fotos reales, las tarjetas muestran un degradado de color. La tipografía Plus Jakarta Sans se incluye en el demo web; en el teléfono aún usa la letra del sistema.
+La app usa el estilo "tecnológico y amable" del Figma (https://www.figma.com/design/F62XPHuK14vIa5nyCIrRUw): violeta `#5B4CF5` y menta `#12C29B`, sombras suaves, esquinas redondeadas e íconos de línea (`apps/mobile/src/icons.tsx`). Los colores viven en `packages/tokens/src/index.ts` con el nombre de su variable en Figma; la app y la web los leen de ahí. Mientras no haya fotos reales, las tarjetas muestran un degradado de color. La tipografía Plus Jakarta Sans se incluye en el demo web; en el teléfono aún usa la letra del sistema.
 
 ## Lugares cerca de ti
 

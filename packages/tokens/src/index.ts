@@ -1,6 +1,6 @@
 /**
  * Tokens de diseño de PidoHora: estilo "tecnológico y amable" del Figma
- * (https://www.figma.com/design/XWT5q5oJigHvZIFuwbaF62).
+ * (https://www.figma.com/design/F62XPHuK14vIa5nyCIrRUw).
  *
  * Es la única fuente de colores, radios, sombras y tipografía. La app (React Native)
  * los lee como objetos y la web los recibe como variables CSS (`cssVariables`).
